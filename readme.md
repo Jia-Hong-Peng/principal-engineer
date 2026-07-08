@@ -31,7 +31,7 @@ This repository contains distributable Agent Skills packages for Codex, GitHub C
 | `.claude/skills/principal-engineer/SKILL.md` | The main instructions Claude Code reads when it invokes this skill. |
 | `.claude/skills/principal-engineer/references/` | Bundled references that belong to the Claude Code skill and may be read when routed from `SKILL.md`. |
 
-The Codex, Copilot, and Claude Code packages intentionally carry the same engineering behavior and reference set; they differ only in the host name inside the `SKILL.md` description. Keep all versions aligned when changing the skill's guidance.
+The Codex, Copilot, and Claude Code packages intentionally carry the same engineering behavior and reference set; they differ only in the host name inside the `SKILL.md` description. Keep all versions aligned when changing the skill's guidance. This alignment is enforced by CI: `scripts/check-skill-alignment.sh` (run by `.github/workflows/skill-alignment.yml`) fails on any reference drift or on any non-host difference between the three `SKILL.md` files.
 
 ## What This Skill Optimizes For
 

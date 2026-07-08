@@ -1,5 +1,20 @@
 # Runtime, Operations, And Diagnostics
 
+## Contents
+- Core
+- Production Failure Design
+- Runtime Diagnosis
+- Data-Intensive Runtime Semantics
+- Observability
+- CPU Memory Disk Network
+- Locks Queues Timers
+- Reliability And Deployment
+- Security Operations
+- Operations And Incidents
+- Infrastructure And Automation
+- Documentation
+- Output
+
 ## Core
 - Production quality is design quality plus operational evidence.
 - Reliability must come from automation, monitoring, versioning, runbooks, rollback, rehearsed recovery, and observable systems.
@@ -41,7 +56,7 @@
 - Schema, message, event, enum, API, and payload meaning changes need mixed-version compatibility for old readers, old writers, old data, and in-flight messages.
 - When weakening consistency or isolation, map each anomaly to the invariant it can break and add versioning, compare-and-set, locks, serializable isolation, reconciliation, or compensation where needed.
 - Timestamps, leases, leadership, locks, majorities, and coordination services need clock, quorum, session, stale authority, and fencing assumptions.
-- New enum/status/mode/type values are data contracts; trace allowlists, filters, switches, serializers, renderers, jobs, analytics, and tests before shipping.
+- New enum/status/mode/type values are data contracts; trace allowlists, filters, switches, serializers, renderers, jobs, analytics, and tests before shipping. (Canonical gate matrix: `pre-landing-review-prevention.md`.)
 - Time-window changes need timezone, day-boundary, partial-day, hourly-vs-daily bucket, and report cutoff review.
 - Values crossing language or serialization boundaries need type normalization before hashing, signing, comparing, or using as lookup keys.
 

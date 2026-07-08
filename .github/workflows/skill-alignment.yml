@@ -1,0 +1,16 @@
+name: skill-alignment
+
+# Enforce that the Codex, Copilot, and Claude Code skill packages stay byte-aligned
+# (references identical; SKILL.md identical apart from the host name).
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check skill variants stay aligned
+        run: bash scripts/check-skill-alignment.sh
