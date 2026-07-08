@@ -12,5 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Regression tests for the alignment checker
+        run: bash scripts/test-check-skill-alignment.sh
       - name: Check skill variants stay aligned
         run: bash scripts/check-skill-alignment.sh

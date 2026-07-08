@@ -9,7 +9,8 @@
 # Usage: bash scripts/check-skill-alignment.sh
 set -euo pipefail
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# SKILL_ALIGN_ROOT overrides the repo root (a seam for the hermetic test harness).
+root="${SKILL_ALIGN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 rel="skills/principal-engineer"
 status=0
 
@@ -39,7 +40,9 @@ for v in .codex .github; do
 done
 
 # 2. SKILL.md parity after host-token normalization (the only legitimate difference).
-normalize() { sed -E 's/Claude Code|Copilot|Codex/__HOST__/g' "$1"; }
+# Normalize ONLY the description line, so a host name that legitimately appears in the
+# body (e.g. an example) still counts as real drift instead of being silently masked.
+normalize() { sed -E '/^description:/ s/Claude Code|Copilot|Codex/__HOST__/g' "$1"; }
 base="$root/.claude/$rel/SKILL.md"
 for v in .codex .github; do
   other="$root/$v/$rel/SKILL.md"
