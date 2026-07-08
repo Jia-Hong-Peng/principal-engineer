@@ -1,0 +1,14 @@
+# Authoring/reference material is intentionally excluded from the public repo.
+data/
+Ref-fromGithub/
+Ref-fromOtherSkill/
+PROMPT.md
+
+# Local scratch and backups.
+*.bak
+*.bak-*
+*.tmp
+
+# OS/editor noise.
+.DS_Store
+Thumbs.db

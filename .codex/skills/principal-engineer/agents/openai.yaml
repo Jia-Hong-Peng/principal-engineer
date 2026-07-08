@@ -1,0 +1,4 @@
+interface:
+  display_name: "Principal Engineer"
+  short_description: "Principal-level repo execution gates"
+  default_prompt: "Use $principal-engineer to implement or review this repository change with design, risk, verification, and pre-landing evidence gates."
