@@ -178,7 +178,7 @@
 - If no issue, say so and name residual test or runtime risk.
 - In legacy areas, review no tests around modified logic, mixed structural and behavioral edits, hard-coded collaborators, global/static reach-through, constructor side effects, and business logic trapped in framework entry points as change-safety risks.
 - In refactoring patches, verify the patch has a named smell, behavior preservation evidence, reviewable steps, and a stop condition.
-- Before finalizing a change, run a scope-aware pre-landing prevention pass for staff-review catch points: test gaps, dead code, magic literals, stale comments, duplicated setup, conditional side effects, boundary violations, and unverified claims.
+- Before finalizing a change, run a scope-aware pre-landing prevention pass for staff-review catch points: test gaps, dead code, magic literals, stale comments, duplicated setup, conditional side effects, boundary violations, and unverified claims. (Canonical gate matrix: `pre-landing-review-prevention.md`.)
 - When introducing enum/status/mode/type values, search sibling values and read all consumers outside the diff before claiming completeness.
 - Conditional side effects are review blockers: if one branch updates state, emits events, logs success, invalidates cache, or records audit data, verify sibling branches preserve the same required invariants.
 - Review new abstractions with the same suspicion as new behavior: name the variation point, current consumers, hidden cost, contract, and why local duplication or a direct call is not safer.

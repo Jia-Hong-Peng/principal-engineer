@@ -1,6 +1,23 @@
 # Pre-Landing Review Prevention
 
+## Contents
+- Purpose
+- How To Use This Gate
+- Required Gate Matrix
+- Core Critical Gates
+- Evidence Report Template
+- Fail Conditions
+- Noise Controls
+- Tests That Prevent Findings
+- Security And Trust Boundaries
+- API And Contract Safety
+- Data Migration Safety
+- Performance And Scale
+- Maintainability And Scope
+- Adversarial Final Pass
+
 ## Purpose
+- This file is the canonical owner of the review-prevention gate matrix. Other references may mention an individual gate in context, but defer here for the complete, authoritative list.
 - Use this as a completion gate for implementation work so the code is less likely to be caught by staff-level review.
 - This is not a PR review workflow. Apply it while developing and before final response, commit, or handoff.
 - Scope the pass to files, contracts, schemas, tests, docs, and runtime paths touched by the change.

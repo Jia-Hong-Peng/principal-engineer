@@ -31,7 +31,7 @@ AI principal-engineer 應該嚴格聚焦在軟體工程品質與技術執行。
 | `.claude/skills/principal-engineer/SKILL.md` | Claude Code 呼叫這個 skill 時會讀取的主要 instructions。 |
 | `.claude/skills/principal-engineer/references/` | 隨 Claude Code skill 一起提供的參考資料；會依照 `SKILL.md` 的路由在需要時讀取。 |
 
-Codex、Copilot 與 Claude Code packages 刻意維持相同的工程行為與 reference set，差別只在 `SKILL.md` description 裡的 host 名稱。更新 skill guidance 時，請讓所有版本保持一致。
+Codex、Copilot 與 Claude Code packages 刻意維持相同的工程行為與 reference set，差別只在 `SKILL.md` description 裡的 host 名稱。更新 skill guidance 時，請讓所有版本保持一致。這項對齊由 CI 強制執行：`scripts/check-skill-alignment.sh`（由 `.github/workflows/skill-alignment.yml` 執行）會在任何 reference 漂移、或三份 `SKILL.md` 之間出現非 host 差異時失敗。
 
 ## 這個 Skill 最佳化的方向
 

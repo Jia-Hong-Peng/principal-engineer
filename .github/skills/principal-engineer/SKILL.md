@@ -21,6 +21,8 @@ description: "Use when nontrivial repository work needs principal-level technica
 - For implementation, SOLID pressure, object design, legacy code, characterization, seams, code review, refactoring, naming, tests, errors, complexity, debugging, and style: read `references/implementation-code-quality.md`.
 - For production latency, runtime evidence, observability, reliability, release safety, overload, dependency failure, infra, ops, incidents, capacity, data pipelines, and security operations: read `references/runtime-ops-diagnostics.md`.
 - For meaningful implementation work, review-readiness claims, landing-ready claims, or "unlikely to be caught by staff-level review": read `references/pre-landing-review-prevention.md` early enough to choose required gates before implementing.
+- For a concrete pattern to imitate — a bad diff, the finding it should trigger, and the fix direction — read `references/worked-examples.md`; use it to calibrate what a real finding looks like, not as an exhaustive catalog.
+- Each reference opens with a `## Contents` map. When the task is narrow, jump to the relevant section instead of reading the whole file; read the full file when the decision spans the reference's topic.
 - If the task spans multiple areas, choose one primary reference for the active decision and read only the needed references completely before acting.
 - When references overlap or conflict, do not average them. Pick the one whose trigger condition matches the concrete task, then constrain secondary guidance to its narrow concern.
 - Do not duplicate reference content in the answer; apply it to the concrete codebase, diff, failure, or design decision.
