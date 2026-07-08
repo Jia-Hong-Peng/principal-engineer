@@ -16,7 +16,7 @@ The skill exists to make an AI agent stronger at building and changing software.
 
 ## Package Layout
 
-This repository contains distributable Agent Skills packages for Codex and GitHub Copilot.
+This repository contains distributable Agent Skills packages for Codex, GitHub Copilot, and Claude Code.
 
 | Path | Role |
 | --- | --- |
@@ -27,8 +27,11 @@ This repository contains distributable Agent Skills packages for Codex and GitHu
 | `.github/skills/principal-engineer/` | The installable GitHub Copilot project skill package. |
 | `.github/skills/principal-engineer/SKILL.md` | The main instructions Copilot reads when it chooses this agent skill. |
 | `.github/skills/principal-engineer/references/` | Bundled references that belong to the Copilot skill and may be read when routed from `SKILL.md`. |
+| `.claude/skills/principal-engineer/` | The installable Claude Code skill package (usable as a project skill in this repo, or copied into `~/.claude/skills/`). |
+| `.claude/skills/principal-engineer/SKILL.md` | The main instructions Claude Code reads when it invokes this skill. |
+| `.claude/skills/principal-engineer/references/` | Bundled references that belong to the Claude Code skill and may be read when routed from `SKILL.md`. |
 
-The Codex and Copilot packages intentionally carry the same engineering behavior and reference set. Keep both versions aligned when changing the skill's guidance.
+The Codex, Copilot, and Claude Code packages intentionally carry the same engineering behavior and reference set; they differ only in the host name inside the `SKILL.md` description. Keep all versions aligned when changing the skill's guidance.
 
 ## What This Skill Optimizes For
 
@@ -119,6 +122,6 @@ The output should feel like a strong technical engineer is working inside the re
 
 Use this skill when an AI coding agent needs principal-engineer-level discipline without importing human management frameworks.
 
-For Codex, use the package under `.codex/skills/principal-engineer/`. For GitHub Copilot, use the project skill under `.github/skills/principal-engineer/`.
+For Codex, use the package under `.codex/skills/principal-engineer/`. For GitHub Copilot, use the project skill under `.github/skills/principal-engineer/`. For Claude Code, use the skill under `.claude/skills/principal-engineer/`.
 
 The purpose is to improve the agent's behavior in software design, architecture, implementation, technical detail, and development style. Everything else is outside the scope.
