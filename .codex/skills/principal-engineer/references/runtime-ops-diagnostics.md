@@ -128,12 +128,11 @@
 ## Operations And Incidents
 - Incident response optimizes fast assessment, communication, mitigation, and learning.
 - Define severity by user impact, data risk, security exposure, SLO breach, and business criticality.
-- High-severity incidents need clear roles: commander, subject matter expert, liaison, note taker.
 - First assess, then inform; avoid speculative public root cause during active response.
 - Incident report should include title, date, participants, impact, timeline, evidence, root cause, contributing factors, action items.
-- Post-incident review should find system failure modes, not blame individuals.
+- Post-incident review should find system failure modes and contributing conditions.
 - MTTR and MTTD are useful but incomplete; action items must reduce recurrence or detection time.
-- On-call must be sustainable, documented, rotated, and supported by runbooks and actionable alerts.
+- Alerts must be actionable and backed by documented runbooks.
 
 ## Infrastructure And Automation
 - Version control source, IaC, config, scripts, runbooks, and operational docs.
