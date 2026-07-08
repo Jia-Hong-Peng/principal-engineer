@@ -1,6 +1,8 @@
 # Principal Engineer
 
-This repository defines an AI skill for making an agent work like a principal software engineer.
+Traditional Chinese: [readme.zh.md](readme.zh.md)
+
+This repository defines AI skill packages for making an agent work like a principal software engineer.
 
 This is not a corporate role-play skill. It does not try to simulate the full human job title, the organizational authority, or the management responsibilities of a principal engineer. The goal is narrower and more useful: define how an AI coding agent should think, decide, and execute when the work requires principal-engineer-level technical judgment.
 
@@ -12,28 +14,21 @@ It should care about software design, software architecture, implementation deta
 
 The skill exists to make an AI agent stronger at building and changing software. It is for technical work inside real repositories.
 
-## Public Package Layout
+## Package Layout
 
-This public repository contains only the distributable Codex skill package.
+This repository contains distributable Agent Skills packages for Codex and GitHub Copilot.
 
 | Path | Role |
 | --- | --- |
-| `.codex/skills/principal-engineer/` | The actual installable skill. This is the output target and the only folder that should be treated as the skill body. |
+| `.codex/skills/principal-engineer/` | The installable Codex skill package. |
 | `.codex/skills/principal-engineer/SKILL.md` | The main runtime instructions Codex reads after the skill triggers. |
-| `.codex/skills/principal-engineer/references/` | Bundled references that belong to the skill and may be read by Codex when routed from `SKILL.md`. |
+| `.codex/skills/principal-engineer/references/` | Bundled references that belong to the Codex skill and may be read when routed from `SKILL.md`. |
 | `.codex/skills/principal-engineer/agents/openai.yaml` | UI metadata for the skill. |
+| `.github/skills/principal-engineer/` | The installable GitHub Copilot project skill package. |
+| `.github/skills/principal-engineer/SKILL.md` | The main instructions Copilot reads when it chooses this agent skill. |
+| `.github/skills/principal-engineer/references/` | Bundled references that belong to the Copilot skill and may be read when routed from `SKILL.md`. |
 
-Authoring and reference material used to build the skill is intentionally excluded from the public package and from the clean public history:
-
-| Path | Role |
-| --- | --- |
-| `data/note/` | Curated notes distilled from engineering books, architecture material, runtime operations material, implementation guidance, and domain/API modeling references. |
-| `data/sources/` | Source staging area for reference material when present. |
-| `Ref-fromGithub/` | External GitHub reference corpus used to compare, update, and challenge the skill. |
-| `Ref-fromOtherSkill/` | Other skill repositories used as comparison material, review pressure, or implementation inspiration. |
-| `PROMPT.md` | Working prompt or authoring input for developing the skill. |
-
-Those sources are not runtime skill instructions. The public artifact is the distilled behavior in `.codex/skills/principal-engineer/`.
+The Codex and Copilot packages intentionally carry the same engineering behavior and reference set. Keep both versions aligned when changing the skill's guidance.
 
 ## What This Skill Optimizes For
 
@@ -51,9 +46,9 @@ This skill pushes an AI agent toward:
 
 ## Recommended Companion Skills
 
-`principal-engineer` works on its own, but it becomes stronger when paired with a small set of companion skills. These are not runtime dependencies and should not be auto-installed by the skill. Install them separately, then restart Codex so they can be discovered.
+`principal-engineer` works on its own, but it becomes stronger when paired with a small set of companion skills. These are not runtime dependencies and should not be auto-installed by the skill. Install them separately in the relevant agent host, then restart or reload that host so they can be discovered.
 
-Do not bulk-install every skill from these repositories. Prefer the smallest useful subset:
+Do not bulk-install every skill from these repositories. Prefer the smallest useful subset. The paths below are Codex skill paths; Copilot users should install equivalent agent skills where available.
 
 | Repository | Why it helps a principal-engineer agent | Suggested Codex skill paths |
 | --- | --- | --- |
@@ -123,5 +118,7 @@ The output should feel like a strong technical engineer is working inside the re
 ## Intended Use
 
 Use this skill when an AI coding agent needs principal-engineer-level discipline without importing human management frameworks.
+
+For Codex, use the package under `.codex/skills/principal-engineer/`. For GitHub Copilot, use the project skill under `.github/skills/principal-engineer/`.
 
 The purpose is to improve the agent's behavior in software design, architecture, implementation, technical detail, and development style. Everything else is outside the scope.
