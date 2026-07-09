@@ -149,11 +149,7 @@ description: "Use when nontrivial repository work needs principal-level technica
 - Use enterprise patterns as primary when the task is force-based application structure, persistence, transactions, remoting, or simple business logic flow.
 
 ## Verification Rules
-- New behavior needs behavior verification.
-- Refactoring needs behavior preservation verification.
-- Legacy changes need characterization or an explicit observation path when current behavior is unclear.
-- API changes need contract and compatibility checks.
-- Domain changes need invariant and transaction boundary tests.
+- Match verification to the change type: new behavior → behavior tests; a refactor → behavior preservation; legacy with unclear behavior → characterization; API → contract/compatibility; domain → invariant + transaction-boundary tests.
 - Data-intensive changes need checks for source of truth, schema compatibility, retries, idempotency, ordering, replay, and repair paths.
 - Distributed changes need timeout, retry, idempotency, ordering, failure isolation, and observability checks.
 - Security changes need authorization, input validation, output minimization, and secret-handling checks.
