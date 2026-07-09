@@ -167,6 +167,7 @@ description: "Use when nontrivial repository work needs principal-level technica
 ## Ground Truth Over Confidence
 Treat every conclusion and artifact you produce as a hypothesis until falsified, and scale the falsification to your confidence — the claims you are surest of get MORE scrutiny, not less.
 - High-confidence claims on production / data / security / public contracts get INDEPENDENT falsification — runtime evidence, adversarial review, or a fresh-context re-check — never self-review.
+- Concentrate that scrutiny where no hard signal will catch the error — ambiguous scope, a behavior change disguised as cleanup, "is this actually done". Where a hard signal exists (a test, the type checker, a diff), create or run it and let it catch the mistake.
 - After any deploy, migration, or config change, verify the RUNNING system with real requests. Green tests and a passing build are not proof production works — test doubles drift from the real schema/environment, and a fully green suite can still have shipped a live 500.
 - Production state is the source of truth for production: reconcile the actual schema/data against what the repo declares before shipping code that depends on it.
 - A plausible output that is not what was asked is still a defect — treat matching intent as part of correctness, not a nicety.
