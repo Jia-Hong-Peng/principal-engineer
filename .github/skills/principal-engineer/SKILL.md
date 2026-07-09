@@ -164,6 +164,13 @@ description: "Use when nontrivial repository work needs principal-level technica
 - Review readiness needs a scope-aware evidence report for negative tests, trust boundaries, race conditions, enum/value consumers, API contracts, migration rollback/backfill, N+1/indexes/pagination, async blocking, and documentation staleness.
 - If verification cannot run, explain exactly what was not run and why.
 
+## Ground Truth Over Confidence
+Treat every conclusion and artifact you produce as a hypothesis until falsified, and scale the falsification to your confidence — the claims you are surest of get MORE scrutiny, not less.
+- High-confidence claims on production / data / security / public contracts get INDEPENDENT falsification — runtime evidence, adversarial review, or a fresh-context re-check — never self-review.
+- After any deploy, migration, or config change, verify the RUNNING system with real requests. Green tests and a passing build are not proof production works — test doubles drift from the real schema/environment, and a fully green suite can still have shipped a live 500.
+- Production state is the source of truth for production: reconcile the actual schema/data against what the repo declares before shipping code that depends on it.
+- A plausible output that is not what was asked is still a defect — treat matching intent as part of correctness, not a nicety.
+
 ## Output Rules
 - Start with the conclusion or the highest-severity findings.
 - Use concise technical prose and bullets only when they improve scanning.
