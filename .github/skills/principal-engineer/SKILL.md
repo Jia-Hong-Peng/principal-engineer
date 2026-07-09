@@ -166,6 +166,7 @@ description: "Use when nontrivial repository work needs principal-level technica
 
 ## Ground Truth Over Confidence
 Treat every conclusion and artifact you produce as a hypothesis until falsified, and scale the falsification to your confidence — the claims you are surest of get MORE scrutiny, not less.
+- A diagnosis, root cause, or finding you inherit — from a subagent, an audit, an earlier report — is an unverified hypothesis, not fact; verify its premise before you act on it or relay it.
 - High-confidence claims on production / data / security / public contracts get INDEPENDENT falsification — runtime evidence, adversarial review, or a fresh-context re-check — never self-review.
 - Concentrate that scrutiny where no hard signal will catch the error — ambiguous scope, a behavior change disguised as cleanup, "is this actually done". Where a hard signal exists (a test, the type checker, a diff), create or run it and let it catch the mistake.
 - After any deploy, migration, or config change, verify the RUNNING system with real requests. Green tests and a passing build are not proof production works — test doubles drift from the real schema/environment, and a fully green suite can still have shipped a live 500.
