@@ -14,8 +14,11 @@ description: "Use when nontrivial repository work needs principal-level technica
 - Exclude PM, people management, stakeholder framing, Agile rituals, methodology debates, meeting design, roadmap planning, and generic culture advice.
 - Do not advocate TDD, BDD, SDD, or any methodology as doctrine; still add tests and verification when risk, behavior, refactoring, or contracts require evidence.
 - Use SOLID, design patterns, object calisthenics, and TDD vocabulary as diagnostic lenses only; never apply them as blanket rituals against the repository's actual forces.
+- Compose with the host: if the harness or project already enforces verification discipline, delegation, and honest reporting, inherit those instead of restating them. This skill's distinctive contribution is engineering judgment and tradeoffs — module boundaries, deep modules, behavior-vs-structure separation, scope/completion boundaries, blast-radius grading, and the trigger conditions for any pattern.
 
 ## Reference Routing
+- Most execution tasks (bug fix, refactor, review, small feature) need only this SKILL.md; read a reference ONLY when its topic is the active primary decision, and do not pre-load references otherwise.
+- **Capability playbooks (executable procedures — follow the phases, do not freelance):** for open-ended "optimize / improve / clean up this project" work, follow `references/playbook-project-optimization.md`; to build a project model before a large change, architecture decision, or optimization, follow `references/playbook-project-understanding.md`. These are HOW-to-produce procedures for project-scope work, not background reading — load and execute them.
 - For architecture, modularity, coupling, deep modules, distributed boundaries, architectural styles, ADRs, fitness functions, data ownership, and schema evolution: read `references/architecture-system-design.md`.
 - For enterprise patterns, API contracts, REST/gRPC/GraphQL/events, DDD, bounded contexts, aggregates, repositories, transactions, DI, and API security: read `references/enterprise-api-domain-model.md`.
 - For implementation, SOLID pressure, object design, legacy code, characterization, seams, code review, refactoring, naming, tests, errors, complexity, debugging, and style: read `references/implementation-code-quality.md`.
@@ -67,11 +70,20 @@ description: "Use when nontrivial repository work needs principal-level technica
 - Locate ownership boundaries: module, package, service, aggregate, database, queue, external dependency.
 - Classify the work: feature, bug fix, refactor, legacy change, architecture, API contract, domain model, runtime, security, migration, deployment, or review.
 - Build a scope gate for meaningful code changes: touched surfaces, required checks, evidence to collect, and acceptable verification.
+- Classify the change as behavior-preserving or behavior-changing: does it alter any observable output, error message, API/contract, timing, or side effect? If yes, keep it separate from structural tidying and never ship it silently inside a "refactor".
 - Select the smallest adequate approach and name the tradeoff.
 - Implement with local style and minimal surface area.
 - Add or update tests where behavior, risk, or refactoring needs protection.
 - Run the cheapest reliable verification first; broaden only when risk requires.
 - Surface remaining unknowns as concrete checks, not vague cautions.
+
+## Scope Pressure & Completion Boundaries
+- An open-ended demand ("do everything", "until nothing is left", "finish to zero") is license neither to execute every candidate change blindly nor to downgrade hard work to a report. Classify by RISK, not by size, and act:
+  - **Behavior-preserving change** — alters no observable output, error, contract, timing, or side effect. Implement it regardless of size, protected by the cheapest sufficient runnable check: unit or characterization tests, plus build + no-caller grep for deletions. A large mechanical refactor is still this class — write characterization tests first, then do it. Size, line count, and "it's a core feature" are NOT reasons to defer.
+  - **Behavior / contract / UX change** — implement the behavior-preserving part now; surface for sign-off ONLY an *unrequested* product/UX decision (new error wording, changed API shape). If the user explicitly asked for the behavior change, just implement it. Do not fold a behavior change silently into a refactor, and do not use "it changes behavior" to defer the structural part.
+  - **Genuinely blocked** — needs a decision only a human can make; an environment/tool/credential unavailable in this context (prod migration window, external secret, product call); or a behavior whose observation path genuinely cannot be built after a real attempt. Only this class may be reported as a boundary instead of implemented, and only with the specific block named.
+- Reporting a boundary counts as completing the work ONLY for the genuinely-blocked class, and only with the specific missing decision/access named. Absence of human QA or code review is NOT a valid boundary for a behavior-preserving change — lock behavior with characterization tests and implement it. Static verification (build, no-caller grep, characterization tests) is a real runnable check; you may not demote work by declaring coverage "insufficient" without first trying to add it.
+- This preserves "implement the fix; do not stop at advice" while still refusing to silently ship behavior changes or reckless unverified edits. When in doubt between implementing and reporting, implement with characterization tests.
 
 ## Decision Modes
 - **Design or architecture**: optimize for information hiding, clear ownership, enforceable boundaries, explicit quality attributes, and reversible decisions.
@@ -140,7 +152,7 @@ description: "Use when nontrivial repository work needs principal-level technica
 
 ## Verification Rules
 - New behavior needs behavior verification.
-- Refactoring needs behavior preservation verification.
+- Refactoring needs behavior preservation verification; a change presented as a refactor must not alter observable behavior — if it does, split it out and verify the new behavior on its own.
 - Legacy changes need characterization or an explicit observation path when current behavior is unclear.
 - API changes need contract and compatibility checks.
 - Domain changes need invariant and transaction boundary tests.
