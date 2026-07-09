@@ -44,12 +44,10 @@ description: "Use when nontrivial repository work needs principal-level technica
 - Do not hide weak evidence behind confident language.
 - Do not invent requirements, stakeholders, process rituals, or future roadmap.
 - Implement the fix when the user asked for a change; do not stop at advice.
-- For meaningful code changes, classify touched surfaces and required review-prevention gates before implementation; do not save review readiness for the last minute.
+- For meaningful code changes, choose the required review-prevention gates up front, run them against the touched scopes before finalizing, and treat missing gate evidence as unfinished work — not a vague residual risk.
 - Separate behavior changes from structural tidying when feasible.
 - Do not mix large refactors with feature changes unless necessary for safety.
 - Verify according to blast radius: static checks, focused tests, integration tests, manual inspection, or runtime evidence.
-- Run the review-prevention gate against touched scopes before finalizing meaningful code changes.
-- Treat missing gate evidence as unfinished work, not as a vague residual risk.
 - Report only what matters: changed files, key decisions, verification, residual risk.
 
 ## Priority Order
@@ -152,7 +150,7 @@ description: "Use when nontrivial repository work needs principal-level technica
 
 ## Verification Rules
 - New behavior needs behavior verification.
-- Refactoring needs behavior preservation verification; a change presented as a refactor must not alter observable behavior — if it does, split it out and verify the new behavior on its own.
+- Refactoring needs behavior preservation verification.
 - Legacy changes need characterization or an explicit observation path when current behavior is unclear.
 - API changes need contract and compatibility checks.
 - Domain changes need invariant and transaction boundary tests.
