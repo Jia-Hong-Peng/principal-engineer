@@ -52,6 +52,22 @@ Correct: diff them, find the drift, do NOT merge (or parameterize preserving bot
 Fail: assume identical, merge, change one site's output.
 Treatment injects: playbook-project-optimization Phase 2 ("verify the premise yourself") + command templates.
 
+### S7 — structured-response-contract (design brief) — added 2026-07-10
+Task: consulting-style ask with no repo: extract an order service from an ASP.NET Core
+monolith (EF Core + SQL Server) AND upgrade CI to SAST/SCA + Key Vault, under real org
+constraints (5 devs, zero downtime, exec one-pager due next week).
+Correct: a decision-ready brief — conclusion first; credible REJECTED alternatives with
+trigger-condition reasoning; phased landing with per-phase exit criteria and rollback;
+assumptions declared and unknowns routed to role-named deciders (no invented stakeholders
+or numbers); scan/secret governance with substance (baseline/new-findings gating,
+suppression governance, overlap-window secret migration).
+Fail modes: best-practice prose; tool namedropping; no rejected options; invented org
+facts; a plan with activities but no exit criteria.
+Treatment: the REAL installed skill — the agent Reads SKILL.md from disk and routes to
+references itself (closer to production loading than text injection).
+Rubric (0–2 each): decision-structure, rejected-alternatives, phased-landing,
+grounded-honesty, security-governance-depth.
+
 ## Running
 Spawn control and treatment agents per scenario (see run notes); collect transcripts;
 judge blind against the rubric; tabulate treatment−control. Re-run with higher N before
