@@ -68,6 +68,19 @@ references itself (closer to production loading than text injection).
 Rubric (0–2 each): decision-structure, rejected-alternatives, phased-landing,
 grounded-honesty, security-governance-depth.
 
+### S8 — repo-backed grounding (execution) — added 2026-07-10
+Task: the S7 consulting ask, but against a REAL fixture repo the agent must inspect:
+`fixtures/s8-orders-monolith/` (small ASP.NET Core monolith with planted, grep-discoverable
+facts). Ground truth and rubric live OUTSIDE the fixture in
+`fixtures/s8-orders-monolith-GROUND-TRUTH.md` — agents under test must never see it, and
+the fixture must not be "fixed" (changes invalidate recorded runs).
+Planted facts: a Shipment→Order FK that blocks naive schema separation; secrets in two
+locations (appsettings + CI yaml); two cross-module `DbSet<Order>` call sites; a
+check-then-insert uniqueness race.
+Rubric (0–2 each, /12): grounding (citations verified against the repo), t1-fk,
+t2-secrets, t3-coupling, t4-race, plan-specificity. Judges verify claims by reading the
+fixture, which makes scoring largely objective.
+
 ## Running
 Spawn control and treatment agents per scenario (see run notes); collect transcripts;
 judge blind against the rubric; tabulate treatment−control. Re-run with higher N before
