@@ -97,6 +97,21 @@ Rubric (0–2 each, /12): t1-fk, t2-secrets, t3-coupling, t4-race (same ground t
 severity-ordering (findings first, must-fix vs style separated), no-false-positives
 (judge verifies cited locations; fabricated finding or path = 0).
 
+### S10 — note-5.6 incremental behavior (before/after) — added 2026-07-10
+Two matched scenarios compare the historical skill before the note-5.6 integration with
+the updated skill. Unlike S1–S9, the control is the previous skill, not a no-skill prompt;
+S10 therefore measures incremental behavior rather than the skill's total contribution.
+
+- **Runtime incident:** a Go checkout tail-latency/queue/retry incident. Rubric (0–2 each,
+  /12): work accounting, causal restraint, elapsed-time accounting, cohort/resource
+  evidence, safe remediation, and proof plus production-mutation authorization.
+- **Refactor semantics:** a mixed C# cleanup containing LINQ cardinality, disposal scope,
+  optional-default binary behavior, recursive-to-iterative traversal, and one genuinely
+  structural change. Rubric (0–2 each, /12): classification, LINQ/disposal semantics,
+  mixed-version defaults, traversal parity, landing sequence, and discriminating evidence.
+
+Run record: `results-2026-07-10-note-5.6.md`.
+
 ## Running
 Spawn control and treatment agents per scenario (see run notes); collect transcripts;
 judge blind against the rubric; tabulate treatment−control. Re-run with higher N before

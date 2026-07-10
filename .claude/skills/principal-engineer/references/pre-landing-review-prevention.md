@@ -12,6 +12,9 @@
 - API And Contract Safety
 - Data Migration Safety
 - Performance And Scale
+- Parser, Native, And Resource Safety
+- Build, Generation, And Artifact Safety
+- Decision Model And Operational Proof
 - Maintainability And Scope
 - Adversarial Final Pass
 
@@ -43,6 +46,14 @@
 | Frontend state, rendering, bundle, fetch flow | Client performance and correctness | No fetch waterfall, stable render references, heavy import review, route splitting/lazy media where relevant |
 | Refactor or legacy change | Behavior preservation | Characterization coverage or equivalent existing tests, unchanged public contract, scoped diff |
 | New abstraction, interface, inheritance, pattern, shared helper | Abstraction fitness | Real variation point, current consumers, reduced caller complexity, no unsupported methods, contract or behavior coverage |
+| Parser, serializer, binary/file format, native/unsafe/FFI | Boundary memory and format safety | Size/unit/range/overflow checks, encoding/version/unknown-field behavior, malformed/fuzz cases, ownership/lifetime/ABI proof |
+| Resource, lock, transaction, subscription, async task | Lifetime and exit safety | Normal/error/cancel/timeout cleanup, ownership, no held resource across slow boundary, unobserved-work check |
+| Build system, generator, compiler/analyzer/toolchain | Reproducibility and input closure | Clean build, declared/pinned inputs, deterministic or semantic output, no hand-edited generated files, fail-closed tool errors |
+| Package, image, binary, release artifact | Artifact identity and promotion | Source/toolchain/dependency linkage, digest/provenance/symbols, build-once promotion, platform matrix, rollback artifact |
+| Backup, restore, failover, recovery path | Recovery proof | Clean restore/drill evidence, RPO/RTO, replay/reconciliation, stale-writer fencing, service-level validation |
+| Architecture/performance/reliability model or simulation | Model validity | Decision/threshold, scope/version/workload, parameter sources/ranges, holdout validation, sensitivity/error, invalidation trigger |
+| Time/date/duration/expiry change | Temporal semantics | Clock type, timezone/DST, precision/unit/range, monotonic deadline, boundary and mixed-version tests |
+| Third-party dependency/framework/default change | Dependency behavior | Transitive graph/runtime version, defaults, thread/pool/timeout/retry, license/security/provenance, compatibility and rollback |
 
 ## Evidence Report Template
 Use this shape internally, and include the compact version in the final response for meaningful code changes:
@@ -96,9 +107,10 @@ Rules:
 - Preserve older clients, mobile apps, subscribers, and mixed-version deploys unless the break is explicit and coordinated.
 
 ## Data Migration Safety
-- Migrations need rollback or roll-forward semantics that do not destroy data unexpectedly.
-- Before dropping, renaming, narrowing, or adding NOT NULL constraints, verify references, existing data, old code compatibility, and backfill order.
-- Large-table changes need lock-duration planning: concurrent indexes where supported, batched backfills, and off-peak or phased deploys.
+- Apply the canonical versioned migration state machine in `technical-tradeoffs-and-modeling.md` Compatibility And Evolution; this gate verifies its evidence rather than redefining it.
+- Require authoritative source, snapshot/watermark/CDC ordering, source version/CAS conflict handling, delete/tombstone propagation, idempotent resume, value-level reconciliation, staged read/write cutover, and old-writer fencing.
+- Migrations need rollback or roll-forward semantics that do not destroy data unexpectedly. Any drop, rename, narrowing, forced retirement, or other irreversible operation requires explicit authorization and a verified target.
+- Large-table changes also need lock-duration planning: concurrent indexes where supported, bounded/rate-limited batches, pause/resume, and off-peak or phased execution.
 - New foreign keys and query predicates need index review; avoid duplicate indexes.
 - Multi-phase changes must work with old code plus new schema and new code plus old data during rolling deploy.
 
@@ -109,6 +121,19 @@ Rules:
 - Replace O(n^2) loops, repeated linear searches, repeated sorts/filters, and string concatenation in loops when data can grow.
 - Do not block async/event-loop paths with sync I/O, sleeps, CPU-heavy work, subprocess calls, or sync database clients.
 - Frontend changes need bundle-size review, deep imports where appropriate, route-level splitting for heavy paths, lazy media, stable render references, and no fetch waterfalls when requests can run in parallel.
+- Keep offered, accepted, completed, rejected, and retried work distinct; a latency improvement caused by dropping more work is a regression.
+- For a performance claim require a representative operation/input distribution, release-like environment, before/after p50/p95/p99 or requested metric, completed throughput, errors/rejections, resources, and correctness.
+- Apply `runtime-ops-diagnostics.md` Complete Time Accounting; use non-overlapping critical-path intervals and interval union for fan-out. Do not optimize a hotspot that cannot materially explain end-to-end time.
+- Before increasing workers/pools or adding async/queues, verify downstream capacity, bounded admission/backpressure, oldest age, timeout, cancellation, retry amplification, and overload response.
+
+## Parser, Native, And Resource Safety
+- Apply the canonical mechanics in `engineering-evidence-and-delivery.md` Correctness Construction. This gate passes only when the triggered matrix-row evidence covers bounds/format, malformed input, unsafe ownership/ABI, and resource exit paths.
+
+## Build, Generation, And Artifact Safety
+- Apply the canonical mechanics in `engineering-evidence-and-delivery.md` Build, Generation, And Release Evidence. This gate passes only with clean/input-closure, generated-output, immutable-artifact, and running-version evidence required by the triggered matrix row.
+
+## Decision Model And Operational Proof
+- Apply modeling mechanics from `technical-tradeoffs-and-modeling.md` and recovery/runtime mechanics from `runtime-ops-diagnostics.md`. This gate passes only with the model-validity or recovery evidence named by the triggered matrix row; execute external experiments only with explicit authorization and a verified target.
 
 ## Maintainability And Scope
 - Remove unused variables, imports, dead functions, and commented-out code unless a concrete compatibility reason is documented.
@@ -119,6 +144,9 @@ Rules:
 - Reject fat interfaces, empty implementations, "not implemented" branches, hidden service locators, framework objects in core policy, and wrappers that only forward calls without hiding volatility.
 - New interfaces, factories, strategies, base classes, adapters, value objects, and shared helpers need evidence they remove current risk or caller complexity (name the variation point, current consumers, hidden cost) — principle-driven churn without that evidence is a finding. Every implementation of a port or base type must preserve the caller-visible contract, error meaning, lifecycle, and invariants; unsupported operations, weakened preconditions, stronger caller obligations, or tests that pass only by accident are findings, not deferrable.
 - If the change creates follow-up work that is genuinely out of scope, record it explicitly instead of hiding it as "later".
+- Treat hidden cost as a contract defect: getters and helpers must not conceal remote I/O, mutation, retries, blocking, unbounded collections, or destructive work.
+- Preserve distinct meanings for absent, unknown, not-applicable, not-yet, cleared, rejected, and failed states. Do not collapse them into a convenient null/default/empty result.
+- An AI-generated or translated patch must pass the same gates as hand-written code plus explicit checks for invented APIs/dependencies, placeholders, fake success, broad suppressions, semantic drift across language/runtime, and accidental edits to generated artifacts.
 
 ## Adversarial Final Pass
 - Attack the happy path: 10x load, duplicate clicks, concurrent requests, slow database, garbage dependency responses, retries, and partial failures.

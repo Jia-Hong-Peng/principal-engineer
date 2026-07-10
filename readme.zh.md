@@ -33,6 +33,19 @@ AI principal-engineer 應該嚴格聚焦在軟體工程品質與技術執行。
 
 Codex、Copilot 與 Claude Code packages 刻意維持相同的工程行為與 reference set，差別只在 `SKILL.md` description 裡的 host 名稱。更新 skill guidance 時，請讓所有版本保持一致。這項對齊由 CI 強制執行：`scripts/check-skill-alignment.sh`（由 `.github/workflows/skill-alignment.yml` 執行）會在任何 reference 漂移、或三份 `SKILL.md` 之間出現非 host 差異時失敗。
 
+## Guidance 的組織方式
+
+`SKILL.md` 是精簡的執行契約；只有目前決策真的需要時，才會載入詳細 reference。
+
+- `engineering-evidence-and-delivery.md` 串起成果、驗收、狀態、介面、實作、驗證、build artifact 與 runtime evidence。
+- `refactoring-change-safety.md` 負責行為／結構分類、重構基線、小步可逆轉換、語言／runtime 語意風險與停手條件。
+- `technical-tradeoffs-and-modeling.md` 負責 decision matrix、assumption ledger、可逆性、導入／相容性、model-or-measure 選擇、校準、敏感度、可靠度／成本與 Pareto 選擇。
+- 架構、enterprise/API/domain、implementation、runtime、DevSecOps 與 .NET references 保存各領域專用的可執行檢查與產物。
+- project-understanding、project-optimization 與 phased-delivery playbooks 將上述 references 轉成 repository 規模的執行流程。
+- pre-landing reference 仍是唯一 canonical 的 touched-surface 完成閘門。
+
+這種安排刻意避免一份超大型 checklist。局部 bug fix 不應載入架構模擬；服務拆分或正式環境延遲調查則應載入它真正需要的 decision module。
+
 ## 這個 Skill 最佳化的方向
 
 這個 skill 會推動 AI agent 更重視：
@@ -43,6 +56,11 @@ Codex、Copilot 與 Claude Code packages 刻意維持相同的工程行為與 re
 - 在提出方案前，仔細閱讀既有 codebase
 - 尊重既有模組邊界、helper APIs 與本地風格
 - 以程式碼與行為為根據的技術取捨分析
+- 從使用者要求的成果一路追到 running system 證據的 evidence chain
+- 明確的狀態、交易、失敗、相容性與 ownership 契約
+- 具有停手與退場條件的可逆重構與 migration
+- 以完成工作量和完整 elapsed time 為準，而不是從平均值猜測的效能診斷
+- 可重現的 build、generated artifact、release、restore 與 recovery 證據
 - 聚焦 bug、regression、風險與可維護性的 review discipline
 - 依照變更影響範圍選擇合適的驗證方式
 - 清楚、具體，而且不靠資深話術撐場面的技術溝通

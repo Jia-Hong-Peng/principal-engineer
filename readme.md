@@ -33,6 +33,19 @@ This repository contains distributable Agent Skills packages for Codex, GitHub C
 
 The Codex, Copilot, and Claude Code packages intentionally carry the same engineering behavior and reference set; they differ only in the host name inside the `SKILL.md` description. Keep all versions aligned when changing the skill's guidance. This alignment is enforced by CI: `scripts/check-skill-alignment.sh` (run by `.github/workflows/skill-alignment.yml`) fails on any reference drift or on any non-host difference between the three `SKILL.md` files.
 
+## How The Guidance Is Organized
+
+`SKILL.md` is the compact execution contract. Detailed guidance is loaded only when the active decision requires it.
+
+- `engineering-evidence-and-delivery.md` connects outcome, acceptance, state, interfaces, implementation, verification, build artifacts, and runtime evidence.
+- `refactoring-change-safety.md` owns behavior/structure classification, refactoring baselines, small reversible transformations, language/runtime hazards, and stop conditions.
+- `technical-tradeoffs-and-modeling.md` owns decision matrices, assumption ledgers, reversibility, adoption/compatibility, model-or-measure selection, calibration, sensitivity, reliability/cost, and Pareto selection.
+- The architecture, enterprise/API/domain, implementation, runtime, DevSecOps, and .NET references contain their specialized executable checks and artifacts.
+- The project-understanding, project-optimization, and phased-delivery playbooks turn those references into repository-scale procedures.
+- The pre-landing reference remains the canonical touched-surface completion gate.
+
+This organization deliberately avoids one giant checklist. A localized bug fix should not load architecture simulation guidance; a service split or production latency investigation should load the exact decision module it needs.
+
 ## What This Skill Optimizes For
 
 This skill pushes an AI agent toward:
@@ -43,6 +56,11 @@ This skill pushes an AI agent toward:
 - Careful reading of the existing codebase before proposing changes
 - Respect for existing module boundaries, helper APIs, and local style
 - Technical tradeoff analysis grounded in code and behavior
+- An evidence chain from requested outcome to running-system proof
+- Explicit state, transaction, failure, compatibility, and ownership contracts
+- Reversible refactoring and migration with stop and retirement conditions
+- Performance diagnosis that accounts for completed work and elapsed time instead of guessing from averages
+- Reproducible build, generated-artifact, release, restore, and recovery evidence
 - Review discipline focused on bugs, regressions, risk, and maintainability
 - Verification that fits the blast radius of the change
 - Clear technical communication without performative seniority

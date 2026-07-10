@@ -35,9 +35,12 @@ Dimensions (drop any that don't apply, add repo-specific ones):
 - **Security & data** — authz/BOLA, injection, PII exposure, migration/schema drift vs code.
 - **Performance** — N+1 queries, missing indexes/pagination, hot-path allocation; rank by evidence (churn × cost), not guesses.
 - **Test gaps** — behavior-critical paths with no test; fail-open gates.
+- **Boundary & failure safety** — parser/size/unit/overflow, unsafe/FFI ownership, resource exits, unobserved async work, timeout/duplicate/unknown outcomes.
+- **Build / generation / release** — clean vs incremental drift, undeclared inputs, stale generated output, mutable artifacts, missing provenance/symbols/rollback/restore proof.
+- **Runtime evidence** — offered vs completed/rejected, retry amplification, unbounded queues/pools, missing version/correlation, inability to account for slow/failing transactions.
 Require each investigator to return findings in ONE format:
-`[severity] file:line — smell → concrete fix | behavior-preserving? y/n | risk-of-fixing: low/med/high`
-plus its own top-N to actually execute.
+`[severity] file:line — trigger/mechanism → observable risk | affected contract | smallest fix | evidence required | rollback/stop | behavior-preserving? y/n/mixed | risk-of-fixing: low/med/high`
+plus its top-N repository-local candidates to execute. External/shared/production changes remain proposals until the user explicitly authorizes the action and the target is verified.
 
 ## Phase 2 — Triage into a ranked, classified worklist
 - **Dedup** findings across investigators (same file:line surfaced twice = one item).
@@ -48,6 +51,8 @@ plus its own top-N to actually execute.
   - *Tie-break when value and risk pull opposite ways:* prefer the lower-risk item, unless the higher-value one is a security or correctness fix — those go first regardless of risk (add the characterization test they need).
 - **Classify** every item by the Scope Pressure taxonomy (SKILL.md): behavior-preserving / behavior-change / genuinely-blocked. This decides HOW each is executed, not whether.
 - Verify the premise of the biggest items yourself before trusting them (a subagent may assert "identical" when copies have drifted — check with a real diff).
+- Reject any item that remains only a smell, metric, keyword, or pattern preference after the proof pass. A candidate becomes a finding only when its trigger, mechanism, impact, and owner are concrete.
+- For architectural or performance candidates, state the current assumption and the threshold that would justify the change. Do not rank guessed future scale above observed correctness or data risk.
 
 ## Phase 3 — Sequence execution (safety + conflict aware)
 - Order: safest + highest-value first; leave large-surface behavior-change items for their own change.
@@ -55,10 +60,12 @@ plus its own top-N to actually execute.
 - Never let one refactor depend on another's uncommitted output without sequencing.
 
 ## Phase 4 — Execute with central verification (do NOT self-certify)
+- Keep execution inside the user's requested repository scope by default. Load/fault tests, restores, alert changes, deployments, migrations, secret operations, and other external/shared/production mutations require separate explicit authorization plus a verified target and stop condition.
 - Behavior-preserving items: implement + protect with the cheapest sufficient runnable check (characterization/unit tests; build + no-caller grep for deletions).
 - Behavior-change items: implement the structural part; land the behavior delta separately with fail-then-pass; surface only an unrequested product/UX decision.
 - After each delegated batch, the orchestrator re-runs the FULL gate itself — a delegate's "tests pass" is a claim, not evidence (verification ≠ self-verification).
 - Commit per logical group with a message that states what changed + the verification.
+- Preserve an evidence pack per group: baseline, target outcome/preserved behavior, finding mechanism, focused diff, commands/results, triggered pre-landing gates, and rollback/removal condition.
 
 ## Phase 5 — Loop until dry, then report the boundary
 - Re-scan (or run a completeness critic: "what dimension wasn't run, what finding wasn't verified?") until a pass yields no new material findings.
@@ -70,6 +77,9 @@ plus its own top-N to actually execute.
 - Batching a risky large-surface change at the tail of unrelated edits → one failure taints the batch.
 - Treating line-count removed or pattern count as the success metric → theater. Success = less defect risk and easier future change, measured, not asserted.
 - Extracting a shared helper that only moves knowledge to callers or adds a shallow wrapper → net-negative.
+- Expanding every lead into a checklist item without proving its mechanism → review noise and wasted change budget.
+- Claiming a performance win from lower latency while completed work fell, rejection rose, or work moved to a queue → false improvement.
+- Treating a generated artifact, backup file, or redundant replica as proof without regeneration, restore, or failure-domain evidence → untested recovery.
 
 ## Command templates (the mechanics the phases name)
 Adapt paths/globs to the repo; these make the named checks concrete.

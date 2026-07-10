@@ -1,7 +1,7 @@
 # DevSecOps And Security Governance
 
-> Source status: this file is practice-based synthesis. The book corpus behind this skill does
-> not cover CI/CD security tooling, secret managers, or scan governance; treat specifics here as
+> Source status: this file is practice-based synthesis. The project-provided technical material
+> does not cover CI/CD security tooling, secret managers, or scan governance; treat specifics as
 > defaults to adapt, and verify vendor capabilities (GitHub Actions, GHAS, Checkmarx, Azure Key
 > Vault) against current vendor docs before committing a design to them.
 

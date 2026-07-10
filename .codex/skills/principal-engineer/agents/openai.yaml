@@ -1,4 +1,4 @@
 interface:
   display_name: "Principal Engineer"
-  short_description: "Principal-level repo execution gates"
-  default_prompt: "Use $principal-engineer to implement or review this repository change with design, risk, verification, and pre-landing evidence gates."
+  short_description: "Evidence-driven principal engineering"
+  default_prompt: "Use $principal-engineer to turn this repository task into an evidence-grounded implementation or review with explicit contracts, tradeoffs, failure handling, and verification."
