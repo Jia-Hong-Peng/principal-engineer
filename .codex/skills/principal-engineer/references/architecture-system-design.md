@@ -18,10 +18,9 @@
 - Fitness Functions And Architecture Experiments
 - Decision Arbitration
 - Architecture Modeling
-- Architecture Audit
-- Output
 
 ## Core
+- The current playbook owns this subtask's architecture decision, experiment, implemented slice, and evidence; it completes the request only when primary and otherwise returns upward. Use this reference only for the active system-design mechanism, then return evidence to the current playbook.
 - Optimize for the top 1-3 quality attributes; more priorities dilute the design.
 - Confirm business goal, change pattern, data ownership, consistency, deployment, operations, and team capability.
 - Prefer decisions that are reversible, observable, governable, and cheap to validate.
@@ -43,18 +42,6 @@ For an existing system, reconstruct architecture from facts before drawing a tar
 - Test topology, release path, rollback, telemetry, co-change history, incidents, and operational workarounds.
 
 Build an architecture risk heatmap instead of a pattern inventory. Rank a risk by impact, likelihood/exposure, distance across boundaries, volatility, and evidence gap. Use numbers only to compare candidates; do not convert heuristic scores into claims of probability.
-
-Use one risk card per candidate:
-
-```text
-Evidence location:
-Current mechanism and boundary:
-Quality attribute or invariant at risk:
-Trigger and failure path:
-Blast radius:
-Smallest reversible treatment:
-Verification and rollback:
-```
 
 ## Quality Attribute Scenarios
 Replace adjectives with scenarios:
@@ -291,22 +278,3 @@ Record significant decisions in an ADR with status quo, alternatives, protected 
 - Prefer percentiles, histograms, queues, saturation, and tail behavior over averages.
 - Treat predictions as assumptions until calibrated against measurements.
 - For model-or-measure selection, workload modeling, calibration/holdout validation, sensitivity, reliability/cost, and Pareto comparison, read `technical-tradeoffs-and-modeling.md`; do not duplicate its model card here.
-
-## Architecture Audit
-1. Rebuild capability, dependency, data-writer, deployment, trust, and failure maps.
-2. Convert the top risks into scoped quality scenarios.
-3. Trace one high-value vertical path and one failure path across code, data, runtime, and release.
-4. Classify coupling by strength, distance, volatility, and dynamic communication/consistency/coordination.
-5. Identify one boundary whose current shape creates a measured correctness, change, scale, or recovery cost.
-6. Select the smallest reversible treatment and its fitness/rollback evidence.
-7. Re-run maps and checks after the change; confirm complexity or coupling was reduced rather than relocated.
-
-Within an explicit repository change request, low-risk improvements include architecture tests for already-agreed dependencies, a documented ownership matrix derived from facts, and a small adapter around a proven vendor leak. A new timeout or cardinality bound changes rejection/failure behavior and needs contract evidence. First gather evidence for service extraction, database split, consistency weakening, workflow redesign, shared-library/service adoption, and any external or destructive migration.
-
-## Output
-- Recommend one option and reject at least one plausible alternative when useful.
-- State top quality attributes, constraints, tradeoffs, risks, and governance.
-- For risks, include impact, likelihood, mitigation, and verification.
-- For architecture diagrams, show only decision-relevant boundaries, dependencies, data ownership, and failure paths.
-- For a nontrivial design include scoped quality scenarios, current fact map, chosen boundary, data/write ownership, workflow/consistency contract, migration phases, fitness functions, rollback, and the assumption that would reverse the choice.
-- A design is not decision-ready when it only names a style. It becomes decision-ready when an engineer can implement the first slice and prove its exit criteria without inventing missing contracts; final completion still uses `pre-landing-review-prevention.md`.

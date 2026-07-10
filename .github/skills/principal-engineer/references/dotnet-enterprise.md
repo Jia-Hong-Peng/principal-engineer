@@ -38,12 +38,12 @@
 - Controllers vs minimal APIs is a repo convention decision; follow what exists, do not mix per taste.
 - DTOs at the boundary; exposing EF entities in responses couples the wire contract to the schema and leaks fields by default.
 - Error contract: use ProblemDetails consistently; never leak exception internals; map domain errors deliberately (see `enterprise-api-domain-model.md` API sections for contract/compat rules).
-- Version the public API deliberately; removing/renaming a field is a breaking change governed by `pre-landing-review-prevention.md` API And Contract Safety.
+- Version the public API deliberately; removing/renaming a field triggers the public-contract row in `pre-landing-review-prevention.md` Required Gates.
 
 ## EF Core And Data
-- Shape aggregates deliberately: load what the invariant needs (explicit Includes or projections), do not rely on lazy loading in hot paths — it is the classic N+1 source (`pre-landing-review-prevention.md` Performance And Scale).
+- Shape aggregates deliberately: load what the invariant needs (explicit Includes or projections), do not rely on lazy loading in hot paths - it is the classic N+1 source and triggers the query/list row in `pre-landing-review-prevention.md` Required Gates.
 - Use `AsNoTracking` for read-only queries; tracking thousands of read-only entities is quiet memory and CPU cost.
-- Migrations are schema contracts: review generated SQL, never edit an applied migration, and apply the staged-deploy gates in `pre-landing-review-prevention.md` Data Migration Safety for NOT NULL/rename/drop.
+- Migrations are schema contracts: review generated SQL, never edit an applied migration, and apply the migration/schema row in `pre-landing-review-prevention.md` Required Gates for NOT NULL/rename/drop.
 - Transactions: one aggregate per transaction as the default (see `enterprise-api-domain-model.md`). A scoped `DbContext` normally carries Unit-of-Work/change-tracking identity; each `SaveChanges` is transactional by default, while multiple calls can still be atomic inside one explicit transaction. Inspect the actual transaction scope, execution strategy/retry, and external effects before classifying partial-failure behavior.
 
 ## Async And Background Work
@@ -100,16 +100,16 @@ Prefer analyzer NuGet packaging for project-pinned, CI-consistent enforcement. V
 ## Legacy .NET Modernization
 - Modernize with analyzer-guided, incremental refactoring: enable analyzers/code-style enforcement, fix by category, and protect unclear behavior with characterization tests.
 - Adopt nullable reference types module-by-module with `#nullable` boundaries, not solution-wide in one diff; each enablement is a real audit of that module's null contract.
-- Framework→Core migrations are Phase 0-5 initiatives (`playbook-phased-delivery.md`): inventory API surface and dependency compatibility first; strangler routing beats big-bang rewrites (see `architecture-system-design.md`).
+- Route Framework-to-Core migrations through P5: inventory API surface and dependency compatibility first, prefer strangler routing over a big-bang rewrite, and let P5 invoke `playbook-phased-delivery.md` only after the decision and experiment are explicit.
 - Baseline warnings, then require new changes not to add high-confidence correctness/nullability/disposal/security findings. Increase severity by rule/project after the existing set is understood; keep suppressions local and justified.
 - Use metrics/analyzers to find hotspots, then combine churn, fan-out, failures, runtime importance, and evidence gaps. Do not refactor solely to lower maintainability index or cyclomatic complexity.
-- Read `refactoring-change-safety.md` for B/S/M classification, behavior cards, differential proof, and stop gates before a large C# change.
+- Use `playbook-safe-existing-code-change.md` for B/S/M classification, behavior cards, execution, and stop gates; load `refactoring-change-safety.md` only for the matching transformation or differential-proof mechanics.
 
 ## Anti-Patterns
 - Singleton-captured scoped service; `IServiceProvider` passed around as an argument.
 - EF entities as API DTOs; lazy loading inside a loop; migrations edited after being applied.
 - `async void` outside event handlers; fire-and-forget `Task.Run` for work that must not be lost.
 - God `Startup`/`Program` with hundreds of unordered registrations and no composition structure.
-- "Repository over EF Core" wrappers that re-expose `IQueryable` — a pass-through layer adding names without hiding anything (see shallow-wrapper rules in `SKILL.md` Design Heuristics).
+- "Repository over EF Core" wrappers that re-expose `IQueryable` - a pass-through layer adding names without hiding anything (see `architecture-system-design.md` Complexity And Information Hiding).
 - Changing optional defaults, LINQ cardinality, deferred/materialized execution, disposal scope, equality, or nullable behavior under a “mechanical refactor” label.
 - Custom analyzer that encodes taste, reports noisy whole-file findings, ignores generated code cost, or offers a destructive/non-idempotent Fix All.

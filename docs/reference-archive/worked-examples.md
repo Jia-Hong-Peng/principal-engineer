@@ -28,7 +28,7 @@ switch (order.status) {
 ```
 Finding: adding an enum value is a data-contract change. Every consumer — switches, filters, serializers, UI labels, persistence, docs, tests — must be located before claiming completeness. A missing branch silently mislabels or drops the new value.
 Fix direction: grep sibling values, read every consumer outside the diff, add the branch (or a fail-closed default), and add a test that exercises the new value end to end.
-Anchors: `pre-landing-review-prevention.md` Required Gate Matrix (enum/value completeness); `implementation-code-quality.md` Review; `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics.
+Anchors: `pre-landing-review-prevention.md` Required Gates (enum/value completeness); `implementation-code-quality.md` Review; `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics.
 
 ## Example 2 — Success Side Effect On Happy Path Only
 Change: add auditing/notification to an update path.
@@ -44,7 +44,7 @@ function applyRefund(order) {
 ```
 Finding: conditional side effects are a review blocker. If one branch emits an event, logs success, invalidates a cache, or writes audit data, the sibling branches must preserve the same required invariants — or the omission must be deliberate and justified. Here a rejected refund leaves no audit trail.
 Fix direction: decide the invariant (every refund decision is audited), then make both branches satisfy it; add a negative-path test asserting the rejected case records what it must.
-Anchors: `pre-landing-review-prevention.md` Maintainability And Scope (conditional side effects), Adversarial Final Pass; `implementation-code-quality.md` Anti-Patterns.
+Anchors: `pre-landing-review-prevention.md` Required Gates (effects and abstraction fitness), Noise Controls; `implementation-code-quality.md` Anti-Patterns.
 
 ## Example 3 — Check-Then-Write Race
 Change: create-if-absent for a unique resource.
@@ -56,7 +56,7 @@ if (user == null) {
 ```
 Finding: read-check-write without atomicity is a race. Under concurrency both callers see `null` and both insert, producing duplicates or a constraint crash. Correctness cannot rest on timing.
 Fix direction: enforce a unique constraint at the store and use insert-or-conflict semantics (upsert / `ON CONFLICT` / catch-unique-and-reload); treat the constraint, not the pre-check, as the source of truth. Add a test that drives two concurrent creates.
-Anchors: `pre-landing-review-prevention.md` Required Gate Matrix (concurrency, data integrity); `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics (distinguish accepted/persisted/durable).
+Anchors: `pre-landing-review-prevention.md` Required Gates (concurrency, data integrity); `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics (distinguish accepted/persisted/durable).
 
 ## Example 4 — Single-Implementation Interface With "Not Supported"
 Change: introduce an abstraction "for flexibility".
@@ -72,7 +72,7 @@ class LocalStorage implements Storage {
 ```
 Finding: principle-driven churn plus a false abstraction. There is one implementation, no named variation point, and `NotSupported` methods prove the port is shaped around a provider rather than a client. The interface adds names without hiding decisions and lies about what it supports.
 Fix direction: delete the interface and call the concrete class directly, or narrow the port to what callers actually use (`read`/`write`). Reintroduce abstraction only when a real second implementation or variation point appears.
-Anchors: `SKILL.md` Tradeoff Rules; `implementation-code-quality.md` Anti-Patterns (principle-driven churn, fat ports); `architecture-system-design.md` Complexity And Information Hiding (reject shallow boundaries).
+Anchors: `technical-tradeoffs-and-modeling.md` Decision Comparison Matrix; `implementation-code-quality.md` Anti-Patterns (principle-driven churn, fat ports); `architecture-system-design.md` Complexity And Information Hiding (reject shallow boundaries).
 
 ## Example 5 — N+1 In A Serializer
 Change: render a list with a nested association.
@@ -83,4 +83,4 @@ for (order in orders) {
 ```
 Finding: a query per row. At list scale this is a latency and load defect that a happy-path test with two rows will not reveal.
 Fix direction: eager-load or batch the association (join, preload, or DataLoader-style aggregation), bound the page size, and review indexes on the join predicate. Verify with a query count assertion or before/after latency on a realistic row count.
-Anchors: `pre-landing-review-prevention.md` Performance And Scale; `runtime-ops-diagnostics.md` CPU Memory Disk Network (avoid N+1).
+Anchors: `pre-landing-review-prevention.md` Required Gates (query/list performance); `runtime-ops-diagnostics.md` CPU Memory Disk Network (avoid N+1).

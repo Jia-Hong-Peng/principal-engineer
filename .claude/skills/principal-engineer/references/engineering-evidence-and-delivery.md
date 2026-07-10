@@ -3,20 +3,16 @@
 ## Contents
 - Purpose
 - Engineering Evidence Chain
-- Repository Entry Routing
 - Executable Outcome Contract
 - Events, State, And Decision Completeness
 - Boundary And Interface Contracts
 - Correctness Construction
 - Build, Generation, And Release Evidence
 - Verification Derived From Contracts
-- Repository Audit Routing
-- Action Boundary
-- Domain Readiness Before Canonical Completion
 
 ## Purpose
 - Use this reference when acceptance, state, interface meaning, parser/native/resource safety, build/generation/artifact behavior, or the path from intent to runtime evidence is the active decision.
-- Own the evidence chain from problem through runtime. Domain, architecture, refactoring, security, and operations references supply specialized decisions; this file keeps those decisions connected.
+- The current playbook owns this subtask's implementation and verification; it completes the request only when primary and otherwise returns upward. This reference supplies evidence-chain, correctness, build, generation, and artifact mechanics only.
 - Produce executable facts, not a speculative ideal model. Mark every inferred rule or boundary until code, data, tests, runtime evidence, or an explicit contract confirms it.
 
 ## Engineering Evidence Chain
@@ -40,11 +36,6 @@ Rules:
 - When documents, code, tests, data, and runtime disagree, record the conflict before deciding which is wrong.
 - Treat undocumented behavior as observed behavior, not automatically as a requirement.
 - Treat a documented rule with no reachable implementation path as an unverified intention, not current behavior.
-
-## Repository Entry Routing
-- For an unfamiliar or new repository, use `playbook-project-understanding.md`; it owns the safety baseline, entry maps, three vertical slices, test topology, and reusable project model.
-- Return here only when that sweep exposes an ambiguous outcome/state/interface or a parser/native/resource, build/generation/artifact, or cross-layer evidence decision.
-- Keep external-system audits read-only unless the user explicitly authorizes mutation and the target environment is verified.
 
 ## Executable Outcome Contract
 Write a compact outcome card before designing a meaningful behavior change:
@@ -193,26 +184,3 @@ Derive evidence rather than adding tests by habit:
 Use example, boundary, property-based, metamorphic, state-sequence, fuzz, contract, integration, fault-injection, differential, and runtime checks according to the failure mechanism. Keep random failures reproducible with the input and seed. Never use reruns to erase the first flaky failure.
 
 Test doubles may isolate callers but do not prove the real protocol, schema, transaction, timeout, or serialization. Make the fake and real implementation pass the same contract suite where possible, and retain at least one real-boundary check.
-
-## Repository Audit Routing
-- For a repository-scale audit and ranked execution loop, use `playbook-project-optimization.md`; it owns candidate generation, proof, ranking, execution, central verification, and sibling search.
-- Apply this reference's outcome/interface/build/boundary criteria only to the active candidate. A text match remains a lead until the playbook proves its mechanism and observable risk.
-
-## Action Boundary
-- Directly perform read-only inventory, static dependency/contract mapping, and evidence-preserving checks.
-- Within an explicit change request, directly make local reversible fixes whose intended behavior and proof are clear.
-- Before changing public contracts, data meaning, auth policy, destructive migration, retry semantics, or production state, obtain the missing authoritative decision. Any external/shared/production mutation also requires explicit user authorization and a verified target/environment.
-- Do not auto-delete dynamically reached code, replace a legacy system, change a concurrency model, introduce distribution, or adopt a framework from smell alone. First create an observation path and falsifiable threshold.
-
-## Domain Readiness Before Canonical Completion
-These are evidence-chain prerequisites only. They never establish landing readiness by themselves; finish with the touched-surface gates in `pre-landing-review-prevention.md`.
-
-A meaningful change has prepared the inputs for that canonical completion pass only when:
-- The observable outcome and preserved behavior are explicit.
-- The authoritative owner, source of truth, transaction, trust, and compatibility boundaries are known.
-- Failure, duplicate, timeout, cancellation, and repair semantics are defined where applicable.
-- The implementation has one clear change path and does not create an unowned duplicate fact.
-- Verification can falsify the change at the cheapest reliable layers, and the required pre-landing gates and evidence are identified.
-- Build and generated artifacts are reproducible enough for the repository's risk.
-- Runtime signals identify version, operation, outcome, dependency, and degradation for production-impacting paths.
-- Rollback or roll-forward is executable, and any temporary path has a measurable removal condition.

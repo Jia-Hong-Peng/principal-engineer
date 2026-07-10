@@ -6,7 +6,6 @@
 - Workload And Capacity Contract
 - Production Failure Design
 - Change, Recovery, And Reconstruction
-- Runtime Diagnosis
 - Measurement Experiment And Trace Contract
 - Complete Time Accounting
 - Data-Intensive Runtime Semantics
@@ -18,10 +17,9 @@
 - Operations And Incidents
 - Infrastructure And Automation
 - Documentation
-- Runtime Audit And Playbooks
-- Output
 
 ## Core
+- The current playbook owns this subtask's hypothesis order, probes, remediation, safety, and evidence; it completes the request only when primary and otherwise returns upward. Use this reference only for the active runtime or operational mechanism, then return to the playbook.
 - Production quality is design quality plus operational evidence.
 - Reliability must come from automation, monitoring, versioning, runbooks, rollback, rehearsed recovery, and observable systems.
 - Unversioned, unmonitored, undocumented, unrecoverable systems are high-risk.
@@ -101,19 +99,6 @@ Adopt brownfield automation incrementally: import/read current state, diff decla
 Backups require an isolated/immutable enough copy, least privilege, retention, integrity, and a real clean-environment restore. Verify schema, identity/permissions, dependencies, replay/dedup, data correctness, and ability to serve. A backup file existing is not recovery evidence.
 
 Define RPO/RTO as measured contracts. Include detection, decision, restore/failover, replay/reconciliation, validation, and return-to-normal time. Exercise failback and stale-primary fencing, not only initial failover.
-
-## Runtime Diagnosis
-- Do not diagnose performance from averages alone; inspect p50, p95, p99, p99.9, histogram, load, errors, and saturation.
-- Start with a problem definition: service, transaction, time range, slow threshold, affected users, offered load.
-- Estimate order of magnitude before deep analysis: ns, us, ms, seconds.
-- Slow transaction time is one of: doing more work, doing same work slower, or waiting.
-- Compare fast, medium, and slow samples of the same transaction.
-- Build a single-request timeline with request ID, RPC ID, parent ID, stages, timestamps, byte sizes, status, and errors.
-- Classify waiting: CPU, memory, disk, network, lock, timer, queue, dependency, scheduler.
-- Do not modify code before forming a falsifiable hypothesis from evidence.
-- After a fix, remeasure p50, p95, p99, error rate, throughput, and resource saturation.
-- Preserve the incident/failure capsule before changing the system: environment, service/operation, start/end/timezone, version/config/deploy, affected population, expected/actual, offered/completed/rejected, p50/p95/p99, errors, resource state, correlation IDs, and raw evidence.
-- Find the first abnormal fact in time. The largest metric at the end of a retry/queue cascade may be a consequence rather than the initiator.
 
 ## Measurement Experiment And Trace Contract
 Before collecting detailed data, state:
@@ -259,7 +244,7 @@ Fix the largest causal segment, then re-account. Confirm work was not merely mov
 - Release checks should validate version, configuration, dependency readiness, migration state, queue consumers, health checks, logs, metrics, and rollback path.
 - Canaries and staged rollouts need stop conditions tied to user impact, error rate, latency percentiles, saturation, queue age, dependency failures, and business-critical flows.
 - Do not concentrate demand through synchronized jobs, uncontrolled fan-out, cache stampedes, fragile chattiness, or coordinated retries.
-- Migration release-safety gates are canonical in `pre-landing-review-prevention.md` Data Migration Safety; apply that gate before rollout.
+- Apply the migration/schema row in `pre-landing-review-prevention.md` Required Gates before rollout.
 - Publish/distribution changes need artifact path, version/tag format, platform matrix, secret handling, and idempotent rerun review.
 - Build once and promote the same artifact digest; do not rebuild per environment and assume equivalence.
 - Validate clean versus incremental build output where stale artifacts can survive. Release evidence should include source, dependency/toolchain, artifact/symbol/provenance, schema/config, and rollback artifact.
@@ -306,23 +291,3 @@ Fix the largest causal segment, then re-account. Confirm work was not merely mov
 - If docs are unused, check freshness, findability, length, ownership, and maintenance path.
 - A runbook must include applicable version/environment/trigger, safety checks, exact commands and expected output, failure branches and stop lines, permissions/data/effects, rollback/degrade, completion verification, and last drill evidence.
 - Keep operational facts near their authority and record which code/schema/config/deploy change invalidates the document.
-
-## Runtime Audit And Playbooks
-Perform the audit read-only by default:
-1. Build the operational system and failure-domain maps.
-2. Select one critical transaction and define its workload/quality contract.
-3. Reconcile deployed artifact/config/schema/state against repository declarations.
-4. Inspect bounds and failure semantics for every remote call, queue, pool, cache, buffer, job, and control plane on the path.
-5. Verify telemetry can produce fast/typical/slow exemplars and complete enough time accounting.
-6. Specify the dependency-failure/overload and recovery/rollback experiment; execute it only with explicit user authorization and a verified isolated target.
-7. Rank findings by user/data/security impact and causal evidence. Implement repository-local changes only when the user requested changes; keep external/shared-system mutation separately authorized.
-
-No telemetry, alert, fault/load injection, restore, failover, release, or production action is inherently safe: each can expose sensitive data, add hot-path load/cost, page operators, or mutate shared state. Verify target, data handling, blast radius, stop condition, and authorization first. Collect representative evidence before capacity resizing, retry/timeout changes, cache changes, concurrency/pool tuning, failover topology, storage migration, or destructive operations.
-
-## Output
-- Give conclusion, evidence, classification, recommended fix, verification, and residual risk.
-- For runtime issues, include before/after metrics and whether the bottleneck moved.
-- For ops changes, include rollback, monitoring, auditability, and blast-radius impact.
-- Mark unknowns as data to collect, not as vague uncertainty.
-- For performance work include experiment contract, fast/medium/slow evidence, complete-time-accounting gaps, causal classification, before/after distribution/resources/completed work, probe overhead, and whether the bottleneck moved.
-- For reliability and recovery include shared failure domains, RPO/RTO evidence, actual artifact/config/schema identity, staged stop criteria, restore/reconciliation proof, and stale-writer fencing where applicable.

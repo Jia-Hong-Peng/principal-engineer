@@ -16,7 +16,7 @@
 - Template: DevSecOps Pipeline Design
 
 ## Core
-- Security controls that live in the pipeline are enforceable; security controls that live in a wiki are optional. Convert policy to automation (see `playbook-phased-delivery.md` Phase 3).
+- Security controls that live in the pipeline are enforceable; security controls that live in a wiki are optional. Route a staged security-control initiative through P5, which may use `playbook-phased-delivery.md` after the decision and experiment are explicit.
 - A control that does not block anything is telemetry, not a control. Decide per control: gate, warn, or measure — and say which.
 - Optimize for developer feedback latency: a slow security stage gets bypassed culturally long before it gets bypassed technically.
 - Every hard gate ships with a break-glass path, designed on day one: an emergency merge/deploy route with named approvers, automatic audit trail, and mandatory post-hoc review. Hard gates without a governed emergency path do not stop bypass — they force it underground.

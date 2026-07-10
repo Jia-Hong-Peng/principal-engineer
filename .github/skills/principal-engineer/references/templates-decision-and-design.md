@@ -74,7 +74,7 @@ one diagram maximum, then prose that a reviewer can challenge>
 <per alternative: shape, why rejected against the ranked quality attributes>
 
 ## Landing Phases
-<Phase 0-5 instantiation or explicit collapse; see playbook-phased-delivery.md>
+<P5 decision/slice plus authorized staged-delivery instantiation or explicit collapse>
 
 ## Operational Cost
 <what this adds to on-call, deploys, infra spend, and team cognitive load>

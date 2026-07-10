@@ -2,10 +2,7 @@
 
 ## Contents
 - Purpose
-- Change Classification
-- Behavior Card And Baseline
 - Tidy Timing Gate
-- Small-Step Refactoring Loop
 - Transformation Decision Table
 - Coupling, Cohesion, And Hotspots
 - Legacy Safety Ladder
@@ -14,51 +11,11 @@
 - Large Replacement And Differential Proof
 - Verification Matrix
 - Review And Finding Format
-- Action Boundary
-- Stop And Domain-Readiness Gates
 
 ## Purpose
 - Use this reference for a structural change, legacy modernization, broad rename/move/extract, behavior-preserving migration, or a refactor whose safety is not obvious.
-- Own behavior-versus-structure classification, the small-step loop, and refactor stop conditions. `implementation-code-quality.md` owns general construction; `pre-landing-review-prevention.md` owns the final touched-surface gates.
+- The current playbook owns this subtask's baseline, execution order, stop conditions, and evidence; it completes the request only when primary and otherwise returns upward. This reference supplies transformation mechanics, semantic hazards, and verification choices only.
 - Treat a refactor as a controlled movement of responsibilities and dependencies under behavior evidence, not as a cleanup label.
-
-## Change Classification
-Classify every meaningful diff segment:
-
-- **B: behavior change** alters observable output, error type/message/status, persistence, event, network call, file, log/audit fact, side-effect count, order, timing/locking, resource use promised by contract, API/schema/config meaning, or bug behavior.
-- **S: structural change** changes names, location, decomposition, dependency expression, or internal representation while preserving all observable behavior and contracts.
-- **M: mixed change** contains both. Split it by default; when impossible, mark the behavior boundary, structural boundary, and shared evidence explicitly.
-
-A bug fix is B even when it restores intended behavior. A performance refactor can be B when latency, ordering, concurrency visibility, resource exhaustion, or timeout behavior changes. Deleting code is S only after static and dynamic reachability plus compatibility evidence show it is unreachable.
-
-Protect behavior in two forms:
-1. Input/environment to observable output and side effects.
-2. Invariants that must hold across every path, such as conservation, monotonic state, uniqueness, or at-most-one external effect.
-
-## Behavior Card And Baseline
-Before a risky refactor record:
-
-```text
-Target behavior: When <condition>, the system <observable result>.
-Preserve: <success, rejection, error, side effect, order, timing contract>.
-Entry: <path:symbol>.
-Callers and dynamic reachability: <direct, DI, reflection, serialization, config, jobs>.
-State/effects: <database, event, remote call, cache, file, clock, random>.
-Current evidence: <test, reproduction, snapshot, trace, query, invariant>.
-Structural obstacle: <specific reasoning/change/verification cost>.
-Allowed structural move: <one transformation>.
-Risk boundary: <public contract, data, concurrency, security, release>.
-Rollback and stop condition:
-```
-
-Establish the smallest reproducible baseline:
-- Record worktree state and unrelated user changes.
-- Run the closest build/type/static and behavior checks.
-- Capture current failures separately.
-- Search callers, registration, reflection strings, serialization names, configuration keys, templates, generated sources, and external/package surface.
-- Trace resource, transaction, exception, async, and side-effect lifetimes through all exits.
-
-If the target behavior and minimum evidence cannot be stated, create an observation path before moving structure.
 
 ## Tidy Timing Gate
 **Prepare structure first** only when one small S change immediately reduces the cost or risk of the requested B change by shortening the path, centralizing a duplicated rule, exposing an input, or enabling a reliable test.
@@ -77,18 +34,6 @@ Decision questions:
 5. Which evidence proves preservation?
 6. Can it be reverted quickly?
 7. At which exact point must work return to B?
-
-## Small-Step Refactoring Loop
-1. Lock one target behavior or invariant.
-2. Protect current behavior with existing tests, characterization, snapshot, query, trace, or differential evidence.
-3. State one structural obstacle as a falsifiable sentence.
-4. Choose one named S transformation.
-5. Make a diff small enough to explain line by line.
-6. Immediately run the closest reliable check.
-7. Inspect the final diff for formatting, generation, dependency, contract, and accidental behavior changes.
-8. Return to the requested behavior. Permit another S move only when it has a direct causal link to the same obstacle.
-
-Use compiler/AST-aware rename, move, signature, and extraction tools when available, but verify their output. Tool support reduces textual mistakes; it does not prove reflection, serialization, dynamic registration, lifecycle, or semantic equivalence.
 
 ## Transformation Decision Table
 | Trigger | Smallest move | Preservation hazards | Stop condition |
@@ -158,7 +103,7 @@ Before a mechanical-looking refactor check:
 Cross-language or auto-translated code requires semantic checks, not only compilation: integer width/sign, overflow, string/byte units, null/default, collection ordering, exceptions/results, async/cancellation, equality/hash, resource ownership, and ABI layout/calling convention.
 
 ## C# And .NET Refactoring Gates
-When a .NET refactor touches LINQ cardinality/deferred execution, optional defaults/signature compatibility, disposal, nullable contracts, equality/records, constructor syntax, interfaces/lifetimes, or Roslyn analyzers/code fixes, read only the matching sections of `dotnet-enterprise.md`. Those .NET-specific semantics are canonical there; this file continues to own B/S/M classification, the behavior card, and the small-step loop.
+When a .NET refactor touches LINQ cardinality/deferred execution, optional defaults/signature compatibility, disposal, nullable contracts, equality/records, constructor syntax, interfaces/lifetimes, or Roslyn analyzers/code fixes, read only the matching sections of `dotnet-enterprise.md`. Those .NET-specific semantics are canonical there; return to `playbook-safe-existing-code-change.md` for execution and completion.
 
 ## Large Replacement And Differential Proof
 Treat a rewrite or large restructure as a migration:
@@ -205,22 +150,3 @@ Rollback and stop condition:
 ```
 
 Do not report function length, metric score, duplication, inheritance, or a pattern name as the finding. Report the concrete change cost or failure mechanism it creates.
-
-## Action Boundary
-- Directly perform inventory, caller/dependency search, behavior mapping, static checks, and reversible local S changes inside an explicit request.
-- When evidence is missing, first add the cheapest observation or characterization path; this is progress, not a reason to stop.
-- Obtain an external decision only for an unrequested public behavior choice, unavailable production state/access, destructive data operation, or another genuinely human-owned constraint.
-- Do not auto-rewrite, change concurrency, remove compatibility, alter error meaning, or delete dynamically reachable code based on smell or confidence alone.
-
-## Stop And Domain-Readiness Gates
-Stop refactoring when the requested B change is safe/easy, the named obstacle is gone, the next move lacks a direct causal link, evidence weakens, or the diff crosses a new risk boundary.
-
-These are refactoring prerequisites only; they do not establish final completion or landing readiness. After they hold, run the touched-surface gates in `pre-landing-review-prevention.md`.
-
-The refactor has prepared the inputs for that canonical completion pass only when:
-- B/S/M classification is explicit and accidental behavior drift is absent.
-- Current and preserved behavior have runnable or inspectable evidence.
-- Callers, dynamic entries, effects, resource lifetimes, and public compatibility were checked.
-- Each transformation had a trigger, preservation guard, and stop condition.
-- Final code lowers total reasoning/change cost instead of moving it to callers.
-- Required pre-landing gates and evidence are identified, the final diff is focused, rollback is clear, and temporary paths have removal evidence.

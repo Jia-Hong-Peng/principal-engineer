@@ -1,4 +1,4 @@
 interface:
   display_name: "Principal Engineer"
-  short_description: "Evidence-driven principal engineering"
-  default_prompt: "Use $principal-engineer to turn this repository task into an evidence-grounded implementation or review with explicit contracts, tradeoffs, failure handling, and verification."
+  short_description: "Action-first principal engineering"
+  default_prompt: "Use $principal-engineer to execute this repository task through baseline, proven mechanism, the smallest safe change, actual verification, final diff inspection, and an explicit stop condition."

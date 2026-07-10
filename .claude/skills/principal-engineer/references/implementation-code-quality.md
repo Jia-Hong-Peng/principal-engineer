@@ -2,9 +2,6 @@
 
 ## Contents
 - Core
-- Technical Start Gate
-- Change Discipline
-- Legacy Change Discipline
 - Cognitive Load And Complexity Budget
 - Structure
 - Responsibility And Object Design
@@ -16,50 +13,18 @@
 - Errors
 - Tests
 - High-Information Verification
-- Refactoring
-- Debugging
-- Performance
+- Algorithm, Cache, And Concurrency Mechanics
 - Technical Slice, Deletion, And Public Surface
 - AI And Generated Change Gate
 - Review
 - Anti-Patterns
 
 ## Core
-- Lower complexity before adding machinery; do not abstract until there is real variation or stable repetition (measurement-before-optimizing gate: see Performance).
+- The current playbook owns the active subtask's baseline, execution order, scope, and verification; it completes the request only when primary and otherwise returns upward. Use this reference only for the active construction or code-quality decision, then return to the playbook.
+- Lower complexity before adding machinery; do not abstract until there is real variation or stable repetition.
 - Treat reduced cognitive load as a construction outcome (fewer hidden facts, fewer jumps, fewer caller obligations, clearer ownership), and keep one authoritative representation for each system fact — derive, generate, validate, or trace duplicates instead of letting them drift.
 - Define clean code by evidence: a reader can reconstruct behavior and cost, a change stays within the owning concept, and verification can distinguish a correct implementation from plausible wrong ones.
 - Treat style, SOLID, object rules, functional techniques, and patterns as pressure probes. Apply the technique only when it removes a named failure or reasoning cost in the current repository.
-
-## Technical Start Gate
-Before implementing a meaningful change:
-1. Write the outcome and preserved behavior in one sentence.
-2. Record worktree state, repository instructions, build/test/generation commands, and existing failures.
-3. Find the real entry, owner, source of truth, output, and side effects.
-4. Trace callers, configuration, serialization, jobs, and dynamic registration.
-5. Mark public contract, data, concurrency, trust, resource, and deployment risk.
-6. Select the cheapest evidence able to falsify the change.
-7. Count new concepts: types, interfaces, dependencies, flags, configuration, stores, queues, services. Require each to pay rent by removing more current complexity than it adds.
-
-Use `engineering-evidence-and-delivery.md` when the outcome, state, or evidence chain is not yet explicit. Use `refactoring-change-safety.md` when a structural move is material.
-
-## Change Discipline
-- Identify the behavior change before editing.
-- Make small changes that compile and test between steps when possible.
-- Separate structural changes from behavior changes when feasible.
-- Tidy only when it directly makes the next change cheaper or safer.
-- Stop tidying once the behavior change is easy enough.
-- Do not do aesthetic rewrites, broad cleanup, or speculative refactors.
-- If behavior and structure are tangled, either split commits or explicitly explain why they cannot be separated.
-
-## Legacy Change Discipline
-- Treat any area without trustworthy tests as legacy risk, even if the code is new.
-- State the requested behavior delta and the behavior that must be preserved before editing.
-- Follow the loop: find the change point, check protection, characterize unclear behavior, create the smallest useful seam, break the blocking dependency, change behavior, then refactor locally.
-- Use characterization tests when consumers may depend on ugly or unclear behavior.
-- Choose seams for sensing, separation, or both; avoid magical public-for-test or subclass-only seams unless there is a cleanup path.
-- Break the first real testability barrier: constructor work, hidden allocation, global state, static construction, time, randomness, files, network, database, framework object, or hard parameter.
-- When direct edits are risky, add behavior with sprout or wrap techniques, then fold temporary structure back once tests support safer design.
-- Do not rewrite, rename broadly, or format large legacy areas while the current behavior is still poorly understood.
 
 ## Cognitive Load And Complexity Budget
 - Budget facts a reader must hold simultaneously: state, inputs, invariants, side effects, error paths, dependencies, and lifecycle.
@@ -171,7 +136,7 @@ Use `engineering-evidence-and-delivery.md` when the outcome, state, or evidence 
 - A bug fix should add a regression test when practical.
 - Hard-to-test code often signals hidden coupling, excess responsibility, or side effects in the wrong place.
 - Coverage is a signal, not proof.
-- Gate-level test requirements (negative paths, boundary/edge values, test isolation from shared state/clock/network, security-enforcement tests, changed-contract coverage) are canonical in `pre-landing-review-prevention.md` Tests That Prevent Findings; apply that gate for touched surfaces.
+- Gate-level test requirements are selected from `pre-landing-review-prevention.md` Required Gates; apply only the rows triggered by the touched surfaces.
 - Test names should describe concrete domain behavior, not implementation mechanics.
 - Use real objects for pure domain behavior; use fakes or integration tests for boundaries where mocks would only prove the mock configuration.
 - Contract tests are valuable when multiple implementations must obey one interface (e.g., an in-memory and a database repository, or adapters for the same external service).
@@ -192,52 +157,11 @@ Snapshot tests are broad characterization, not automatic approval. Normalize onl
 
 Flaky evidence is a defect. Preserve the first failure, classify environment/test assumption/product race/nondeterminism, and make input/time/order reproducible. Do not use rerun-until-green as the fix.
 
-## Refactoring
-- Refactoring preserves external behavior; a bug fix is a behavior change — make it a separate, explicitly labeled change, not part of the refactor.
-- Before refactoring, understand current behavior and test safety.
-- Extract by intent, not by arbitrary line count.
-- Remove duplication only when meaning and change reason are the same.
-- Keep temporary duplication when rules may diverge.
-- Long routine: split by intent and abstraction level.
-- Large class: split by responsibility and change reason.
-- Data clump: create a meaningful type.
-- Feature envy: move behavior toward the data or concept it uses.
-- Shotgun surgery: improve boundary, ownership, or dependency direction.
-- Large migration: use adapter, facade, feature flag, parallel run, and exit plan.
-- Diagnose the smell before choosing a technique: symptom, maintenance cost, scope, cleaner end state, verification path, and stop condition.
-- Use the smallest named treatment that reduces the diagnosed smell; escalate only when smaller moves are blocked.
-- Preserve public compatibility or provide a transition path when changing signatures, constructors, visibility, type hierarchy, serialized shape, plugin points, or externally reachable APIs.
-- Before extraction or movement, identify inputs, outputs, mutated variables, callers, visibility, construction paths, and invariants.
-- Before condition consolidation or algorithm substitution, verify side effects, ordering, truth tables, edge cases, and performance-sensitive behavior.
-- Stop when the named smell is gone or the requested change is safe; record unrelated smells separately.
-
-## Debugging
-- Reproduce before changing.
-- Describe the symptom, scope, timeline, input, and expected behavior.
-- Trace data flow, state flow, and call chain backward to the earliest wrong fact.
-- Change one variable at a time.
-- Convert reproducible bugs into tests.
-- Search for sibling defects after fixing one root cause.
-- Use bisection or version history when the introduction point matters.
-- Fix root cause; do not only suppress the symptom.
-- Debug from reproduced facts: observe, isolate, explain, fix, and verify before blaming compilers, operating systems, libraries, vendors, or environments.
-- If code works for reasons nobody can explain, prove the behavior with data before depending on it.
-- Build a failure capsule for intermittent bugs: exact symptom, first/last time, version/config/environment, identity-safe input shape, trace/request/event IDs, expected/actual state, resource/load context, and raw evidence links.
-- Trace both directions: from external failure backward to the first wrong fact, and from suspected defect forward through state propagation. Fix at the earliest owner that can prevent the wrong state.
-- Compare a fast/good, typical, and slow/bad sample of the same operation. A property common to all samples is unlikely to explain only the failure.
-- After a root-cause fix, search the repository for the same failure mechanism, not only the same symbol.
-
-## Performance
-- First make it correct and clear.
-- Then measure with representative data and release-like settings.
-- Locate bottleneck before optimizing.
+## Algorithm, Cache, And Concurrency Mechanics
 - Prefer algorithm, data structure, I/O, network, and database fixes before micro-optimization.
 - Cache only when invalidation, memory, freshness, and failure behavior are designed.
 - Concurrency increases state and timing complexity; encapsulate it.
-- Re-measure correctness and performance after optimization.
-- Define operation, input distribution, offered/completed/rejected load, concurrency, p50/p95/p99, errors, and release-like environment before tuning.
 - Calculate the theoretical maximum end-to-end gain before micro-optimizing a small fraction of work. Stop when the local speedup cannot materially move the quality contract.
-- Classify a slow path as doing more work, doing the same work slower, or waiting. Use `runtime-ops-diagnostics.md` for the evidence procedure.
 - Treat cache as derived state and authorization context: define key, freshness, invalidation, negative/error caching, TTL/capacity/eviction, stampede, cold start, multi-node consistency, and unavailable behavior.
 - Treat concurrency as a capacity experiment, not free speed. Measure pool/queue/lock/downstream saturation, context switching, memory, tail latency, and rejection after changing worker count.
 
@@ -267,7 +191,7 @@ Use `engineering-evidence-and-delivery.md` for deterministic generator, build, a
 ## Review
 - Review order: behavior bug, security, data loss, transaction consistency, concurrency, contract break, dependency direction, boundary leak, tests, maintainability, naming, style; findings need concrete risk and an actionable fix, style is not a blocker when a formatter/linter should decide, and a broad-refactor request needs the risk it reduces named.
 - In legacy areas, treat no tests around modified logic, mixed structural/behavioral edits, hard-coded collaborators, global/static reach-through, constructor side effects, and business logic trapped in framework entry points as change-safety risks; in refactoring patches, verify a named smell, behavior-preservation evidence, reviewable steps, and a stop condition.
-- If no issue, say so and name residual test or runtime risk. Before finalizing, run the pre-landing prevention pass (`pre-landing-review-prevention.md`) for gate coverage — enum/value completeness, conditional side effects, and abstraction/substitutability fitness (Maintainability And Scope) are canonical there; do not finalize with a required gate unverified.
+- If no issue, say so and name residual test or runtime risk. Before finalizing, apply the triggered enum, effect, and abstraction rows in `pre-landing-review-prevention.md` Required Gates; do not finalize with a required gate unverified.
 - A valid finding states trigger, mechanism, observable failure/change cost, affected contract, smallest fix, and required proof. A smell or metric without a mechanism is only an investigation lead.
 
 ## Anti-Patterns

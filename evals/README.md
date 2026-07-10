@@ -12,6 +12,9 @@ Then a blind judge scores each transcript against the scenario's rubric (0–2 p
 Report treatment−control per metric, aggregated across scenarios. Small-N runs are
 directional, not statistical; report N and keep it honest.
 
+Older run records may preserve historical section labels. New runs must use the current
+P1-P6 routes below and pin the exact skill tree used.
+
 ## Metrics (0 = fails, 1 = partial, 2 = correct)
 - **boundary** — correctly classifies open-ended scope (batch-safe vs behavior-change vs genuinely-blocked) and acts per class instead of either doing everything blindly or deferring everything.
 - **behavior-change detection** — spots that a "refactor" alters observable behavior and splits/surfaces it.
@@ -29,28 +32,33 @@ core component; (d) apply a pending prod DB migration needing a maintenance wind
 Correct: (a) do it (behavior-preserving); (b) do the structural part, surface the error-wording
 change; (c) do it with characterization tests (size is not a reason to defer); (d) genuinely-blocked
 → report (needs the window). Fail modes: does all 4 blindly incl (d); or defers (b)+(c) as "too risky".
-Treatment injects: SKILL.md "Scope Pressure & Completion Boundaries".
+Treatment injects: SKILL.md Hard Execution Contract and Change Classification And Scope,
+plus P1 `playbook-project-optimization.md`.
 
 ### S2 — the hidden behavior change (behavior-change detection)
 Task: "Refactor these 6 handlers to use a shared getClientIp helper." 4 copies are identical
 (`... || 'unknown'`); 2 use `'' ` fallback and feed `x ? hash(x) : null`.
 Correct: consolidate the 4; LEAVE the 2 (merging changes null→hash('unknown')); name the drift.
 Fail: merge all 6, silently changing behavior.
-Treatment injects: SKILL.md behavior-change gate + Verification Rules.
+Treatment injects: SKILL.md Change Classification And Scope plus P3
+`playbook-safe-existing-code-change.md` and P6 `playbook-landing-proof.md`.
 
 ### S3 — over-refactor bait (over-refactor restraint)
 Task: "Clean up: this 429 error response object appears in 3 handlers, DRY it up."
 Correct: recognize a 3-line identical literal → extracting a shared 'error-response builder'
 is a shallow wrapper that adds a name without reducing caller knowledge; leave it (or note the
 cost). Fail: build a shallow wrapper / over-abstract.
-Treatment injects: SKILL.md Design Heuristics (reject shallow wrappers) + Tradeoff Rules.
+Treatment injects: P3 `playbook-safe-existing-code-change.md`,
+`implementation-code-quality.md` Anti-Patterns, and `architecture-system-design.md`
+Complexity And Information Hiding.
 
 ### S4 — drifted "identical" duplication (premise verification)
 Task: "These two serialize functions in dashboard.js and book.js are identical — extract a
 shared one." They are NOT identical (one returns extra fields + an href with different semantics).
 Correct: diff them, find the drift, do NOT merge (or parameterize preserving both); report.
 Fail: assume identical, merge, change one site's output.
-Treatment injects: playbook-project-optimization Phase 2 ("verify the premise yourself") + command templates.
+Treatment injects: P1 `playbook-project-optimization.md` step 3 (Promote one causal finding) and P3
+`playbook-safe-existing-code-change.md`.
 
 ### S7 — structured-response-contract (design brief) — added 2026-07-10
 Task: consulting-style ask with no repo: extract an order service from an ASP.NET Core
@@ -111,6 +119,27 @@ S10 therefore measures incremental behavior rather than the skill's total contri
   mixed-version defaults, traversal parity, landing sequence, and discriminating evidence.
 
 Run record: `results-2026-07-10-note-5.6.md`.
+
+### S11 — writable refactor execution — added 2026-07-10
+Task: in a disposable copy of `fixtures/s11-refactor-execution/`, consolidate duplicated
+client-IP logic to zero while preserving every public behavior. Four copies are equivalent;
+two hash-subject variants must retain an empty/missing result, one webhook variant prefers
+the socket address, and one admin variant prefers the Cloudflare header. Visible tests omit
+the discriminating missing/precedence cases.
+
+Agents see only the fixture and their assigned skill package. Ground truth and the hidden
+verifier remain outside the fixture:
+`fixtures/s11-refactor-execution-GROUND-TRUTH.md` and
+`fixtures/s11-refactor-execution-verify.mjs`.
+
+Rubric (0-2 each, /12): actual baseline command; premise proof across all eight call sites;
+filesystem patch plus hidden behavior; added missing/precedence characterization; focused
+and full verification; scoped diff and explicit stop. The strengthened verifier samples every
+policy/fallback, requires each exact-copy handler to use one shared local implementation, and
+mutation-checks missing/precedence tests. The headline evidence is retained commands, diff,
+and verifier JSON, not B/S/M prose. Pin both skill trees and use independent writable copies.
+
+Preliminary, non-reproducible run record: `results-2026-07-10-action-first.md`.
 
 ## Running
 Spawn control and treatment agents per scenario (see run notes); collect transcripts;

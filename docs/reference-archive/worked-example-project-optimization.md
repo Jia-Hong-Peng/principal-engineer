@@ -3,7 +3,10 @@
 A real end-to-end run of `playbook-project-optimization.md` on a Cloudflare Pages + Vue 3
 codebase asked to "scan the whole project, refactor and clean up, to zero." Use it to
 calibrate what each phase actually produces — especially the Phase 2 ranking call and the
-central re-verification the procedure demands. Numbers are from the real run.
+central re-verification the procedure demands. Numbers are from the real run. This is
+historical evidence, not the current control contract: commits and deployment in that run
+were explicitly requested/authorized. Never infer commit, push, deploy, or external-mutation
+permission from this example; the current SKILL and playbook govern.
 
 ## Phase 1 — dimensional fan-out (3 blind read-only investigators)
 Split by disjoint areas (so they could run in parallel without conflict): `functions/`,
@@ -36,11 +39,13 @@ self-reports. This caught real subagent judgment worth keeping:
   the Phase 2 "verify the premise with a real diff" rule, applied downstream.
 - The getClientIp agent refused to merge the auth copies because their `''` vs `'unknown'`
   fallback would change an ipHash — a behavior change hiding inside an apparent dedup.
-Committed per logical group (one concern per commit), each message stating the verification.
+In that explicitly authorized run, commits were created per logical group (one concern per
+commit), each message stating the verification.
 
 ## Phase 5 — loop + report the boundary
-Re-scan yielded only large structural items left. Final report = what shipped (dead code +
-~8 consolidations + 1 race fix, all gate-green + deployed) PLUS the ranked backlog of what was
+The bounded re-scan yielded only large structural items left. Final report = what changed
+(dead code + ~8 consolidations + 1 race fix, all gate-green; deployment was separately
+authorized and verified in that run) PLUS the ranked backlog of what was
 deliberately not batch-executed and WHY:
 - `useApi` routing — behavior change, needs a product/UX decision → boundary, named.
 - Decompose a 2800-line core component — behavior-preserving but large; per the corrected

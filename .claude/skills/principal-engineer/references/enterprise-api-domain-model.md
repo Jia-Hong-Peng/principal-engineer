@@ -19,7 +19,8 @@
 - Reliable Events And Long Processes
 - CQRS And Event Sourcing Gates
 - Dependency Injection
-- Audit And Domain Readiness
+
+The current playbook owns this subtask's tracing, implementation, and verification; it completes the request only when primary and otherwise returns upward. Use this reference only for the active API, domain, persistence, transaction, or integration mechanism, then return to the playbook.
 
 ## First-Pass Evidence Maps
 Before changing an enterprise flow, build only the maps the decision needs:
@@ -143,7 +144,7 @@ Request-scoped application service, Unit of Work, and mutable domain objects mus
 - Treat omission, explicit null, clear/delete, default, and unknown as distinct update semantics. Protect updates with version/ETag/CAS or field masks when old clients could overwrite fields they do not know.
 
 ## API Compatibility
-- Contract-compatibility gates (breaking-change definition, error-format consistency, doc/client updates, mixed-version and older-client support) are canonical in `pre-landing-review-prevention.md` API And Contract Safety; apply that gate before landing.
+- Apply the public-contract row in `pre-landing-review-prevention.md` Required Gates before landing.
 - API-design-specific contract surface beyond that gate: event schemas and gRPC field numbers are contracts too — reserve removed field numbers rather than reusing them, add optional fields for compatible evolution, deprecate before removal with a deadline and replacement, and back the contract with OpenAPI/AsyncAPI/Protobuf plus contract tests covering status, body, headers, auth, pagination, empty state, and errors.
 - Track active consumers, versions, endpoints, auth scopes, error/status use, payload size, and deprecation traffic. Documentation-only retirement is not evidence that a consumer is gone.
 - Test producer-to-consumer direction explicitly across old/new clients, servers, stored data, messages, and rolling deployment. Preserve unknown fields/enum values through the real translation and round-trip path when compatibility requires it.
@@ -173,7 +174,7 @@ Separate deploy from release. Feature flag, canary, mirror/dark launch, blue-gre
 Minimum API telemetry: rate, status/error class, p50/p95/p99, saturation/pools/queue, dependency, version/consumer, payload/cardinality, retry, auth deny, rate-limit/load-shed, deprecation use, and trace/deadline propagation. Separate journal/audit facts from diagnostic detail and never log credential material.
 
 ## API Security
-- Authentication, authorization, trust-boundary, secrets, and crypto gates are canonical in `pre-landing-review-prevention.md` Security And Trust Boundaries; apply that gate before landing.
+- Apply the auth and trust-boundary rows in `pre-landing-review-prevention.md` Required Gates before landing.
 - API-specific identity: API keys identify applications, not users; access tokens must be short-lived, scoped, revocable, and audience-checked; validate JWT signature, issuer, audience, expiration, not-before, and required claims.
 - Name API-specific vulnerability classes explicitly — BOLA, BFLA, mass assignment, excessive data exposure — and enforce with object- and function-level authorization plus allowlist validation for input, output, and writable fields.
 - Gateway enforces ingress policy but never replaces service-level authorization; webhooks need signature verification and replay protection when supported; user-controlled URLs, redirects, and fetches need SSRF protection via allowlist/blocklist for internal ranges; audit security-sensitive actions with actor, target, result, reason, and trace ID.
@@ -314,14 +315,3 @@ Do not bundle events, CQRS, and Event Sourcing. Each has an independent trigger 
 - Define disposal ownership. The creator/container usually disposes what it owns; borrowed dependencies are not disposed opportunistically by consumers.
 - Decorator order is behavior: authorization, validation, transaction, retry, cache, telemetry, and audit can change result or side effects when reordered. Test the actual object graph and deliberate broken order/lifetime/registration cases.
 - Use Pure DI for small explicit graphs. Use a container when graph size, scopes, decorators, or late binding produce real value; verify registrations at startup/composition tests rather than waiting for a runtime request.
-
-## Audit And Domain Readiness
-Audit an existing flow in this order:
-1. Trace one command and one query through the four evidence maps.
-2. Find rule/model leaks, duplicate writers, transaction gaps, concurrency anomalies, lazy/unbounded query cost, and external model contamination.
-3. Diff runtime routes, published specs, gateway config, generated clients, and observed consumer/version traffic.
-4. Trace commit -> outbox -> publish -> receive -> domain commit -> ack and identify loss, duplicate, order, gap, and repair at each arrow.
-5. Attack aggregate/state rules with invalid, concurrent, duplicate, late, and partial-failure cases.
-6. Apply the smallest pattern upgrade that addresses the proven force; do not rebuild the application around a pattern catalog.
-
-These domain/API prerequisites never establish final completion by themselves. The work is ready for the canonical touched-surface pass in `pre-landing-review-prevention.md` when the use-case owner, domain/data source of truth, transaction/concurrency boundary, public/integration contract, failure/retry/idempotency semantics, compatibility/retirement path, and focused evidence are explicit. A class named Repository, Aggregate, Gateway, or Service does not satisfy this prerequisite.

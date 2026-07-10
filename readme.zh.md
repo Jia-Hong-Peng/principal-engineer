@@ -30,21 +30,26 @@ AI principal-engineer 應該嚴格聚焦在軟體工程品質與技術執行。
 | `.claude/skills/principal-engineer/` | 可安裝的 Claude Code skill package（可作為本 repo 的 project skill，或複製到 `~/.claude/skills/`）。 |
 | `.claude/skills/principal-engineer/SKILL.md` | Claude Code 呼叫這個 skill 時會讀取的主要 instructions。 |
 | `.claude/skills/principal-engineer/references/` | 隨 Claude Code skill 一起提供的參考資料；會依照 `SKILL.md` 的路由在需要時讀取。 |
+| `docs/reference-archive/` | 保留給維護者的歷史範例與模板，不放進 runtime packages。 |
 
 Codex、Copilot 與 Claude Code packages 刻意維持相同的工程行為與 reference set，差別只在 `SKILL.md` description 裡的 host 名稱。更新 skill guidance 時，請讓所有版本保持一致。這項對齊由 CI 強制執行：`scripts/check-skill-alignment.sh`（由 `.github/workflows/skill-alignment.yml` 執行）會在任何 reference 漂移、或三份 `SKILL.md` 之間出現非 host 差異時失敗。
 
 ## Guidance 的組織方式
 
-`SKILL.md` 是精簡的執行契約；只有目前決策真的需要時，才會載入詳細 reference。
+`SKILL.md` 保存不可跳過的執行閉環，並依「使用者要 Agent 做什麼」路由，而不是依工程名詞目錄路由。
 
-- `engineering-evidence-and-delivery.md` 串起成果、驗收、狀態、介面、實作、驗證、build artifact 與 runtime evidence。
-- `refactoring-change-safety.md` 負責行為／結構分類、重構基線、小步可逆轉換、語言／runtime 語意風險與停手條件。
-- `technical-tradeoffs-and-modeling.md` 負責 decision matrix、assumption ledger、可逆性、導入／相容性、model-or-measure 選擇、校準、敏感度、可靠度／成本與 Pareto 選擇。
-- 架構、enterprise/API/domain、implementation、runtime、DevSecOps 與 .NET references 保存各領域專用的可執行檢查與產物。
-- project-understanding、project-optimization 與 phased-delivery playbooks 將上述 references 轉成 repository 規模的執行流程。
-- pre-landing reference 仍是唯一 canonical 的 touched-surface 完成閘門。
+| Mode | Primary playbook |
+| --- | --- |
+| 稽核並改善整個專案 | `playbook-project-optimization.md` |
+| 交付 feature 或 bug fix | `playbook-vertical-slice-delivery.md` |
+| 安全重構或現代化既有程式 | `playbook-safe-existing-code-change.md` |
+| 診斷並修復 runtime 問題 | `playbook-runtime-diagnosis.md` |
+| 技術決策或 migration | `playbook-technical-decision.md` |
+| 證明變更可以 landing | `playbook-landing-proof.md` |
 
-這種安排刻意避免一份超大型 checklist。局部 bug fix 不應載入架構模擬；服務拆分或正式環境延遲調查則應載入它真正需要的 decision module。
+每份 playbook 都有必要輸入、執行順序、階段出口證據、分支、停止條件、實際命令；使用者要求實作時，也必須產生 repository artifact。較長的 architecture、enterprise/API/domain、implementation、runtime、tradeoff、DevSecOps 與 .NET 文件只是在 playbook 指定步驟中選讀的技術工具箱，不再擁有工作流程或完成判定。
+
+這能防止精美報告冒充工程成果：code-change 任務若沒有 patch 或指定 artifact、實際 command 結果、final diff inspection、triggered landing gates 與明確停手原因，就不算完成。
 
 ## 這個 Skill 最佳化的方向
 

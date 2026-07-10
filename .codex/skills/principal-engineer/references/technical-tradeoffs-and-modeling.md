@@ -2,7 +2,7 @@
 
 ## Contents
 - Purpose
-- Fixed Decision Procedure
+- Decision Comparison Matrix
 - Reversibility And Assumption Ledger
 - Abstraction, Reuse, And Extension Cost
 - Dependency And Framework Adoption
@@ -15,27 +15,13 @@
 - Workload, Capacity, Reliability, And Cost
 - Calibration And Decision Confidence
 - Alternative Search And Pareto Selection
-- Decision Output
-- Audit And Decision Readiness
 
 ## Purpose
 - Use this reference when two or more technically plausible choices differ in correctness, coupling, compatibility, performance, failure, security, cost, or reversibility.
 - Use modeling only to change a decision. Do not build a detailed simulation to produce impressive numbers when a direct experiment is cheaper or no threshold depends on the output.
-- Own the reusable decision frame. Architecture, domain/API, runtime, security, and refactoring references own their specialized mechanisms.
+- The current playbook owns this subtask's decision procedure, experiment, implemented slice, and evidence; it completes the request only when primary and otherwise returns upward. This reference supplies comparison, modeling, compatibility, and migration mechanics only.
 
-## Fixed Decision Procedure
-1. State the decision in problem language, not solution language.
-2. Name the guarantees that must not be traded away: invariant, data integrity, contract, durability, authorization, latency, availability, or recovery.
-3. Select at most three quality attributes to optimize first. Treat “all qualities” as an unresolved decision.
-4. Describe workload, data distribution, current boundary, versions, and failure modes.
-5. Generate at least two feasible alternatives, including status quo when it is viable.
-6. Eliminate any alternative that violates a hard constraint.
-7. Compare gains, costs, new failure modes, and who inherits complexity.
-8. Prefer the smallest reversible experiment that can falsify the leading assumption.
-9. Recommend one option, reject at least one credible option, and name the condition that would reverse the decision.
-10. Turn the decisive assumption into a metric, contract check, fitness function, or re-evaluation trigger.
-
-Use this matrix:
+## Decision Comparison Matrix
 
 | Dimension | Required question |
 | --- | --- |
@@ -288,32 +274,3 @@ Eliminate candidates violating hard contract, data, security, locality, capacity
 - Added failure surface not represented by the model.
 
 Automated search can exploit model blind spots. Preserve the search space, constraints, model version, inputs, seed, and rejected-invalid rate; validate representative finalists with a higher-fidelity experiment.
-
-## Decision Output
-For a material decision produce:
-
-```text
-Decision:
-Protected guarantees and hard constraints:
-Current evidence and unknowns:
-Recommended option:
-Gains:
-Costs and new failure modes:
-Rejected option and why it loses here:
-Assumptions and reversal thresholds:
-Smallest falsifying experiment:
-Compatibility, rollout, and rollback:
-Fitness/monitoring signals:
-```
-
-Do not call an option simpler if it transfers obligations to callers, operations, migrations, or repair. Do not call it safer unless the failure and recovery path has stronger evidence.
-
-## Audit And Decision Readiness
-When auditing an existing decision:
-1. Reconstruct the original guarantee and current constraints from code, data, config, history, runtime, and contract consumers.
-2. Identify changed assumptions: workload, topology, versions, dependencies, data, failure rate, cost, or capability.
-3. Measure current gains and costs, including operational workarounds and reconciliation.
-4. Test a representative failure and rollback path.
-5. Update the assumption ledger and either retain, adapt, or retire the decision.
-
-These decision prerequisites do not establish final completion or landing readiness. A tradeoff is ready for the canonical touched-surface pass in `pre-landing-review-prevention.md` only when one option is recommended, a credible option is rejected, decisive assumptions are observable, compatibility and failure paths are explicit, the next experiment can disprove the choice, and the exit path is affordable under the stated constraints.

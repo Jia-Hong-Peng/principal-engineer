@@ -7,9 +7,12 @@ made without the model is a guess. Capability layer — follow the phases.
 ## When to use
 - Before optimization, a large refactor, an architecture decision, or a cross-cutting change.
 - When onboarding to a repo, or when a change keeps surprising you (a sign your model is wrong).
+- For explicit onboarding, run the full breadth below. When P1/P5 invokes this playbook,
+  restrict every phase to the caller's decision path, trace one success plus the highest-risk
+  failure/boundary, and return the compact model internally instead of producing a broad report.
 
 ## Phase 1 — Skeleton (cheap, breadth-first)
-Delegate a broad read-only sweep (don't read everything into the main context). Capture:
+For explicit onboarding, delegate a broad read-only sweep when useful. Capture:
 - **Safety baseline** — worktree/user changes, repository instructions, generated/vendor areas, commands and their external side effects, current version/config/schema, existing failures.
 - **Entry points** — servers/handlers/pages/CLI/cron/queue consumers; what starts execution.
 - **Module & ownership boundaries** — top-level dirs and their responsibilities; where each system fact (a status enum, a validation rule, a mapping) is authoritatively owned.
@@ -32,12 +35,15 @@ Output a one-screen map (dirs → responsibility, entrypoints → flow), not a f
 - Runtime/release gaps: unknown artifact/config/schema identity, unbounded queues/pools/payloads, retry amplification, hidden data writers, no rollback/restore/reconciliation, and telemetry unable to account for a transaction.
 - Coupling evidence: shared knowledge/lifecycle, strength across distance, co-change volatility, workflow communication/consistency/coordination, and whether alleged services truly deploy/fail/recover independently.
 
-## Phase 4 — Write the model down (so it's reusable, not re-derived)
-Produce a compact, durable model artifact:
+## Phase 4 — Preserve the model without polluting the repository
+Keep a compact model in working memory and the final response. Update a durable repository
+artifact only when the user requested it or an established architecture/operations artifact
+naturally owns the information:
 - Safety/baseline record, module + ownership map, key success/failure/cross-boundary flows, source-of-truth/write-owner table, public/integration contracts, runtime/release path, risk/test-gap list, and open questions unresolved from evidence.
 - State assumptions and unknowns explicitly — do not present an inferred boundary as confirmed.
 - Keep an evidence link for every non-obvious claim and record which change invalidates the model. Do not duplicate schemas or generated lists that can be linked or regenerated.
-This artifact feeds `playbook-project-optimization.md` Phase 0 and any design decision.
+This model feeds `playbook-project-optimization.md` probe selection and technical decisions; its value
+is the execution state, not a new Markdown file.
 
 ## Anti-patterns
 - Reading files into the main context instead of delegating the sweep and keeping the conclusion.

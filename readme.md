@@ -30,21 +30,33 @@ This repository contains distributable Agent Skills packages for Codex, GitHub C
 | `.claude/skills/principal-engineer/` | The installable Claude Code skill package (usable as a project skill in this repo, or copied into `~/.claude/skills/`). |
 | `.claude/skills/principal-engineer/SKILL.md` | The main instructions Claude Code reads when it invokes this skill. |
 | `.claude/skills/principal-engineer/references/` | Bundled references that belong to the Claude Code skill and may be read when routed from `SKILL.md`. |
+| `docs/reference-archive/` | Historical examples/templates retained for maintainers but excluded from runtime packages. |
 
 The Codex, Copilot, and Claude Code packages intentionally carry the same engineering behavior and reference set; they differ only in the host name inside the `SKILL.md` description. Keep all versions aligned when changing the skill's guidance. This alignment is enforced by CI: `scripts/check-skill-alignment.sh` (run by `.github/workflows/skill-alignment.yml`) fails on any reference drift or on any non-host difference between the three `SKILL.md` files.
 
 ## How The Guidance Is Organized
 
-`SKILL.md` is the compact execution contract. Detailed guidance is loaded only when the active decision requires it.
+`SKILL.md` contains a hard execution loop and routes by the action the user needs. It does
+not route by a catalog of engineering topics.
 
-- `engineering-evidence-and-delivery.md` connects outcome, acceptance, state, interfaces, implementation, verification, build artifacts, and runtime evidence.
-- `refactoring-change-safety.md` owns behavior/structure classification, refactoring baselines, small reversible transformations, language/runtime hazards, and stop conditions.
-- `technical-tradeoffs-and-modeling.md` owns decision matrices, assumption ledgers, reversibility, adoption/compatibility, model-or-measure selection, calibration, sensitivity, reliability/cost, and Pareto selection.
-- The architecture, enterprise/API/domain, implementation, runtime, DevSecOps, and .NET references contain their specialized executable checks and artifacts.
-- The project-understanding, project-optimization, and phased-delivery playbooks turn those references into repository-scale procedures.
-- The pre-landing reference remains the canonical touched-surface completion gate.
+| Mode | Primary playbook |
+| --- | --- |
+| Audit and improve a project | `playbook-project-optimization.md` |
+| Deliver a feature or bug fix | `playbook-vertical-slice-delivery.md` |
+| Refactor or modernize existing code | `playbook-safe-existing-code-change.md` |
+| Diagnose and remediate runtime behavior | `playbook-runtime-diagnosis.md` |
+| Make a technical decision or migration | `playbook-technical-decision.md` |
+| Prove a change ready to land | `playbook-landing-proof.md` |
 
-This organization deliberately avoids one giant checklist. A localized bug fix should not load architecture simulation guidance; a service split or production latency investigation should load the exact decision module it needs.
+Each playbook requires inputs, ordered actions, phase-exit evidence, branches, stop gates,
+actual commands, and a repository artifact when implementation was requested. The longer
+architecture, enterprise/API/domain, implementation, runtime, tradeoff, DevSecOps, and .NET
+files are specialist toolboxes loaded only at a named playbook step. Knowledge references
+do not own workflow or completion.
+
+This prevents a polished report from masquerading as engineering work: a code-change task
+is incomplete without the patch or requested artifact, command results, final diff
+inspection, triggered landing gates, and an explicit stop condition.
 
 ## What This Skill Optimizes For
 

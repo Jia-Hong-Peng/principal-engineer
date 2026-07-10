@@ -116,7 +116,7 @@ When to use: reporting a technical initiative or decision upward. One page maxim
 <risk avoided or capability gained, in outcome terms (availability, delivery speed, compliance, cost)>
 
 ## Status Against Plan
-<current phase (Phase 0-5), on/off track, evidence — not activity lists>
+<current P5/staged-delivery state, on/off track, evidence - not activity lists>
 
 ## Decisions Needed From You
 <numbered, each with options, recommendation, and deadline — or "none">

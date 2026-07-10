@@ -15,7 +15,8 @@
    ```
 3. `bash scripts/check-skill-alignment.sh` 必須輸出 `OK`。同步前跑一次取 FAIL、同步後取
    PASS——這是文件類改動的 fail-then-pass 證據。
-4. Push 後確認 CI（skill-alignment workflow）綠。
+4. 只有使用者明確要求或授權 push 時才推送，之後確認 CI（skill-alignment workflow）綠；
+   未授權時停在本機驗證完成，不把「改 skill」解讀成允許遠端 mutation。
 
 ## 2. 重大改動先抗辯再合入
 
@@ -29,7 +30,7 @@ DevSecOps 擴充初稿即被抓出 pipeline gate 漏洞、baseline 無治理、O
 ## 3. 行為驗證（fail-then-pass）
 
 改了 skill 的規則 → 必須用改動前後各跑同一評測場景，證明目標行為翻轉。
-實例：`playbook-phased-delivery.md` 的 Phase 0 gate-lens 規則，用 S8 場景驗證
+歷史實例：當時 `playbook-phased-delivery.md` 的 Phase 0 gate-lens 規則，用 S8 場景驗證
 t4 競態偵測從 0.5 → 2.0（見 results 檔 S8v2 節）。文字改了但行為沒測＝未驗證，
 只能如實標註「已修改、未驗證」。
 
@@ -62,12 +63,12 @@ package。整合時已按 trigger/mechanism/decision/check/stop condition 去重
 按來源檔逐本增生 reference，也不要把書名、作者或章節結構搬回公開 skill。
 
 - outcome → state/interface → implementation → verification → runtime 的 evidence chain、build/generator/artifact
-  基線與 parser/native/resource 通用防線：`engineering-evidence-and-delivery.md`。
-- B/S/M 分類、behavior card、小步重構、語言語意、差分驗證與 stop gate：
-  `refactoring-change-safety.md`。
-- decision matrix、assumption ledger、可逆性、dependency/framework、distributed delivery/idempotency、
+  與 parser/native/resource 通用機制：`engineering-evidence-and-delivery.md`；P2 擁有執行流程。
+- 重構 transformation、語言語意與差分驗證機制：`refactoring-change-safety.md`；B/S/M、behavior card、
+  小步執行與 stop gate 由 P3 擁有。
+- decision comparison matrix、assumption ledger、可逆性、dependency/framework、distributed delivery/idempotency、
   versioned migration/compatibility、model-or-measure、分析方法選型、calibration/sensitivity/reliability/
-  cost/Pareto：`technical-tradeoffs-and-modeling.md`。
+  cost/Pareto：`technical-tradeoffs-and-modeling.md`；決策、實驗與 slice 由 P5 擁有。
 - quality scenario、S×D×V coupling、decomposition、workflow/data ownership、fitness/PoC：
   `architecture-system-design.md`。
 - persistence/concurrency/session、API traffic/lifecycle、DDD/outbox/process/CQRS/ES/DI：
@@ -75,10 +76,50 @@ package。整合時已按 trigger/mechanism/decision/check/stop condition 去重
 - construction/cognitive load/state-effects/errors/tests/AI change：`implementation-code-quality.md`。
 - operational map、完整 elapsed-time accounting、trace experiment、capacity/recovery：
   `runtime-ops-diagnostics.md`。
-- touched-surface final completion criterion 仍只放 `pre-landing-review-prevention.md`；其他檔可列
-  domain-readiness prerequisites，但必須明說它們不能獨立宣告 landing-ready，並導回 canonical gate。
+- touched-surface gate matrix 只放 `pre-landing-review-prevention.md`；terminal procedure 與
+  READY/NOT READY/BLOCKED 只由 P6 擁有。specialist reference 不可再放另一套 audit/exit workflow。
 
 新增規則前先確認 canonical 家；相同判準不要在多檔各寫一份略有差異的版本。
+
+## 7. Action-first execution ownership
+
+知識覆蓋不等於可執行 Skill。`note-5.6` 原本反覆出現的 Agent execution contract
+必須由 playbook 保存；topic reference 只提供當步判準，不可擁有頂層流程或獨立宣告完成。
+
+固定路由：
+
+- P1 audit/fix：`playbook-project-optimization.md`
+- P2 feature/bug/vertical slice：`playbook-vertical-slice-delivery.md`
+- P3 refactor/legacy：`playbook-safe-existing-code-change.md`
+- P4 runtime diagnosis/remediation：`playbook-runtime-diagnosis.md`
+- P5 decision/migration：`playbook-technical-decision.md`
+- P6 terminal proof：`playbook-landing-proof.md`
+
+所有 primary 實作流程必須以 P6 結束；subordinate 只回傳 `PROVED`/`CHANGED`/`BLOCKED` 給 caller。
+有效完成至少要有 code/test/script/requested artifact、
+actual command result、final diff inspection 與 explicit stop condition。只有使用者明示 read-only，
+或具體 decision/access/environment 不可取得時，才能 prose-only 結案。不要為了證明 skill 有跑而
+污染 repo 寫長篇文件；work packet 預設留在 working memory，正式 artifact 只在任務自然需要時建立。
+
+## 8. 2026-07-10 action-first removal map
+
+這次不是把 playbook 疊在百科 reference 上，而是刪掉重複 workflow。被移除的內容都有唯一接手者：
+
+| Removed duplicate workflow | Canonical owner after removal |
+| --- | --- |
+| `refactoring-change-safety.md` classification/card/loop/action/stop | SKILL B/S/M scope + P3 + P6 |
+| `implementation-code-quality.md` start/change/legacy disciplines | P2 or P3 |
+| `technical-tradeoffs-and-modeling.md` fixed procedure/output/audit | P5 |
+| `runtime-ops-diagnostics.md` runtime audit/artifact exit | P4 |
+| `architecture-system-design.md` architecture audit/artifact exit | P5 |
+| `enterprise-api-domain-model.md` audit/readiness procedure | current P2/P5 caller |
+| `engineering-evidence-and-delivery.md` repo routing/action/readiness | P1/P2/P6 |
+| `pre-landing-review-prevention.md` topic procedures/output template | P2-P5 mechanics + P6 terminal proof |
+| Unrouted worked examples/review-governance template | `docs/reference-archive/` (maintenance only) |
+
+刪除後 canonical `.claude` package（SKILL + references）為 2,811 行，比 `5a92ee1` 的
+3,311 行少 500 行（15.1%），同時新增了五個 P2-P6 executable playbooks。後續若又把 start gate、audit loop、
+output template 或 completion gate 寫回 specialist reference，視為 workflow duplication regression。
 
 ## 已知陷阱（都真實發生過）
 
@@ -91,10 +132,14 @@ package。整合時已按 trigger/mechanism/decision/check/stop condition 去重
   未解，勿假設小模型套上規則就穩定。
 - 健檢/稽核類 agent 會系統性高估可刪量、誤報重複——執行刪除時按「有等價物才刪」
   鐵則保守處理，行數目標讓位於內容保全。
+- 把來源的 Agent 執行契約拆成 topic bullets，會得到「知識完整但只會寫報告」的百科型 skill。
+  評測必須看 disposable fixture 的 filesystem diff、command exits、hidden behavior 與 stop scope，
+  不能只評回答內容。
 
 ## 證據索引
 
-- 全部評測數據與 caveats：`evals/README.md`（場景 S1–S10）、`evals/results-2026-07-09.md`、
-  `evals/results-2026-07-10.md`、`evals/results-2026-07-10-note-5.6.md`
+- 全部評測數據與 caveats：`evals/README.md`（場景 S1–S11）、`evals/results-2026-07-09.md`、
+  `evals/results-2026-07-10.md`、`evals/results-2026-07-10-note-5.6.md`、
+  `evals/results-2026-07-10-action-first.md`
 - 2026-07-10 演進鏈：`d03703c` 去重 → `77d7ce4` 忠實度修補 → `4d547f6` 能力擴充 →
   `4ffdee6` break-glass → `a378ef4` S7 N=5 → `ebfc17e`/`b614749` S8 → `6b12125` S9＋gate-lens
