@@ -119,8 +119,8 @@
 - Threat model by asset, actor, entry point, trust boundary, impact, and mitigation.
 - Defense in depth assumes one layer will fail.
 - Zero trust means every user, service, device, and network path needs identity, authorization, and auditability.
-- Secrets must be centralized, rotated, revocable, least-privileged, inventoried, and kept out of source, logs, images, and ad hoc env sprawl.
-- CI/CD, VCS, build environment, artifact repo, logs, and production credentials are part of the attack surface.
+- Secret management (central store, rotation with overlap, workload identity, leak response) is canonical in `devsecops-security-governance.md` Secret Management.
+- Pipeline and supply-chain security (CI/CD attack surface, per-stage identity, provenance) is canonical in `devsecops-security-governance.md` Pipeline Design Rules.
 - Prefer default-deny network policy and explicit allowed paths.
 
 ## Operations And Incidents

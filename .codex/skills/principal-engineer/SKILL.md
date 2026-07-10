@@ -1,6 +1,6 @@
 ---
 name: principal-engineer
-description: "Use when nontrivial repository work needs principal-level technical execution: architecture, system design, domain/API/data modeling, legacy change, refactoring, debugging, reliability, security, performance, runtime diagnosis, release risk, pre-landing readiness, and verification. Make sure to use when Codex must implement changes, preserve behavior, reduce complexity, prevent staff-review findings, or explain engineering tradeoffs. Excludes PM/people/process/Agile/TDD/BDD/SDD advocacy, roadmap, and culture advice."
+description: "Use when nontrivial repository work needs principal-level technical execution: architecture, system design, domain/API/data modeling, legacy change, refactoring, debugging, reliability, security, performance, runtime diagnosis, release risk, pre-landing readiness, and verification. Also covers CI/CD and DevSecOps pipeline design, secret management and security/scan governance, .NET/ASP.NET Core enterprise work, phased delivery planning, and authoring ADRs, RFCs, design docs, review reports, and executive summaries. Make sure to use when Codex must implement changes, preserve behavior, reduce complexity, prevent staff-review findings, or explain engineering tradeoffs. Excludes PM/people/process/Agile/TDD/BDD/SDD advocacy, roadmap, and culture advice."
 ---
 
 # Principal Engineer
@@ -11,14 +11,17 @@ description: "Use when nontrivial repository work needs principal-level technica
 - Ground every decision in the current repository, existing behavior, local conventions, runtime evidence, and measurable constraints.
 - Prefer concrete code, contracts, boundaries, tests, telemetry, migration steps, and rollback paths over abstract guidance.
 - Treat the bundled references as decision pressure, not as books to summarize or quote.
-- Exclude PM, people management, stakeholder framing, Agile rituals, methodology debates, meeting design, roadmap planning, and generic culture advice.
+- Exclude PM, people management, stakeholder framing, Agile rituals, methodology debates, meeting design, roadmap planning, and generic culture advice. Communication artifacts ABOUT a technical initiative (executive summary, review report, landing plan, tech-debt cycle) are in scope; what stays excluded is people/process advice detached from a technical decision.
 - Do not advocate TDD, BDD, SDD, or any methodology as doctrine; still add tests and verification when risk, behavior, refactoring, or contracts require evidence.
 - Use SOLID, design patterns, object calisthenics, and TDD vocabulary as diagnostic lenses only; never apply them as blanket rituals against the repository's actual forces.
 - Compose with the host: if the harness or project already enforces verification discipline, delegation, and honest reporting, inherit those instead of restating them. This skill's distinctive contribution is engineering judgment and tradeoffs — module boundaries, deep modules, behavior-vs-structure separation, scope/completion boundaries, blast-radius grading, and the trigger conditions for any pattern.
 
 ## Reference Routing
 - Most execution tasks (bug fix, refactor, review, small feature) need only this SKILL.md; read a reference ONLY when its topic is the active primary decision, and do not pre-load references otherwise.
-- **Capability playbooks (executable procedures — follow the phases, do not freelance):** for open-ended "optimize / improve / clean up this project" work, follow `references/playbook-project-optimization.md`; to build a project model before a large change, architecture decision, or optimization, follow `references/playbook-project-understanding.md`. These are HOW-to-produce procedures for project-scope work, not background reading — load and execute them.
+- **Capability playbooks (executable procedures — follow the phases, do not freelance):** for open-ended "optimize / improve / clean up this project" work, follow `references/playbook-project-optimization.md`; to build a project model before a large change, architecture decision, or optimization, follow `references/playbook-project-understanding.md`; to plan or execute a large initiative (migration, platform change, tooling overhaul, tech-debt campaign), follow `references/playbook-phased-delivery.md` (Phase 0-5). These are HOW-to-produce procedures for project-scope work, not background reading — load and execute them.
+- When the deliverable is a standalone document, copy the matching template: design doc, architecture doc, ADR, or RFC from `references/templates-decision-and-design.md`; design review, code review report, tech-debt register/governance cycle, or executive summary from `references/templates-review-and-governance.md`; the landing-plan template is at the end of `references/playbook-phased-delivery.md`, and the DevSecOps pipeline template at the end of `references/devsecops-security-governance.md`.
+- For CI/CD and pipeline security design, scanner/finding governance (SAST/SCA/secret scanning), secret management and rotation, and access/audit design: read `references/devsecops-security-governance.md`.
+- When the repository is .NET/ASP.NET Core and the task touches DI, solution layering, API surface, EF Core, async, testing, or legacy modernization: read `references/dotnet-enterprise.md`.
 - For architecture, modularity, coupling, deep modules, distributed boundaries, architectural styles, ADRs, fitness functions, data ownership, and schema evolution: read `references/architecture-system-design.md`.
 - For enterprise patterns, API contracts, REST/gRPC/GraphQL/events, DDD, bounded contexts, aggregates, repositories, transactions, DI, and API security: read `references/enterprise-api-domain-model.md`.
 - For implementation, SOLID pressure, object design, legacy code, characterization, seams, code review, refactoring, naming, tests, errors, complexity, debugging, and style: read `references/implementation-code-quality.md`.
@@ -166,6 +169,26 @@ Treat every conclusion and artifact you produce as a hypothesis until falsified,
 - After any deploy, migration, or config change, verify the RUNNING system with real requests. Green tests and a passing build are not proof production works — test doubles drift from the real schema/environment, and a fully green suite can still have shipped a live 500.
 - Production state is the source of truth for production: reconcile the actual schema/data against what the repo declares before shipping code that depends on it.
 - A plausible output that is not what was asked is still a defect — treat matching intent as part of correctness, not a nicety.
+
+## Structured Response Contract
+- Applies when the proposal spans multiple components or services, changes a public contract or data model, needs staged rollout or migration, or designs a pipeline or system — work that warrants a decision brief. Localized work (one endpoint, one module, a bug fix, a factual answer) uses Output Rules instead; code review uses Review Stance. Decision test when unsure: would this work need more than one PR or more than one owner? If no, skip the contract.
+- Produce these sections in this order, all ten present; if one is genuinely empty, keep the heading and state why in one line:
+  1. Conclusion — the recommendation, decision-ready, in ≤3 sentences.
+  2. Recommended approach — what and why, tied to this repository's real constraints.
+  3. Rejected alternatives — at least one credible option and the concrete reason it loses here.
+  4. Architecture / design — boundaries, contracts, data flow; deep enough to implement from.
+  5. Landing phases — each phase with exit criteria and a rollback; instantiate `references/playbook-phased-delivery.md` (Phase 0-5) for large initiatives, collapse explicitly for smaller ones.
+  6. Implementation notes — the difficult code-level parts, integration points, ownership.
+  7. Test strategy — what proves each stage, matched to blast radius.
+  8. Monitoring and operations — signals, alerts, and who owns them after landing.
+  9. Rollback / exit — how each phase is undone; name any irreversible step and its guard.
+  10. Risks and open questions — assumptions to verify; decisions needed and from whom.
+- Hard rejections — an answer with any of these is unfinished, regardless of how correct it sounds:
+  - best-practice prose or tool name-dropping without a decision and an implementation path
+  - any of the ten sections absent without a stated one-line reason
+  - technically correct but undeployable inside the org's stated constraints (stack, approvals, windows, compliance)
+- Unknown owners or deciders: name the role and add it to open questions; never invent named stakeholders.
+- Fill sections with repository reality — paths, contract names, measured numbers — not generalities. When the user needs a standalone document rather than a chat answer, switch to the matching template file.
 
 ## Output Rules
 - Start with the conclusion or the highest-severity findings.
