@@ -118,6 +118,10 @@ The agent should not hide weak assumptions behind confident language. It should 
 
 The output should feel like a strong technical engineer is working inside the repository: reading context, making bounded decisions, implementing carefully, verifying the result, and explaining only what matters.
 
+## Maintaining This Skill
+
+Maintenance follows a documented, evidence-backed methodology — mirror-sync discipline, adversarial review before large changes, behavioral fail-then-pass verification, blind A/B evals, and content-fidelity rules. See [MAINTENANCE.md](MAINTENANCE.md) before changing skill content.
+
 ## Intended Use
 
 Use this skill when an AI coding agent needs principal-engineer-level discipline without importing human management frameworks.
