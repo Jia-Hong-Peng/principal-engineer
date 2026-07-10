@@ -116,11 +116,11 @@
 - Gate-level test requirements (negative paths, boundary/edge values, test isolation from shared state/clock/network, security-enforcement tests, changed-contract coverage) are canonical in `pre-landing-review-prevention.md` Tests That Prevent Findings (76-81); apply that gate for touched surfaces.
 - Test names should describe concrete domain behavior, not implementation mechanics.
 - Use real objects for pure domain behavior; use fakes or integration tests for boundaries where mocks would only prove the mock configuration.
-- Contract tests are valuable when multiple implementations must obey one interface: in-memory and database repositories, payment gateways, storage adapters, message publishers, feature flags, or SDK clients.
+- Contract tests are valuable when multiple implementations must obey one interface (e.g., an in-memory and a database repository, or adapters for the same external service).
 - Test builders are useful when setup noise hides the behavior under test; keep them domain-specific and avoid hiding required fields or invalid defaults.
 
 ## Refactoring
-- Refactoring preserves external behavior unless explicitly fixing a bug.
+- Refactoring preserves external behavior; a bug fix is a behavior change — make it a separate, explicitly labeled change, not part of the refactor.
 - Before refactoring, understand current behavior and test safety.
 - Extract by intent, not by arbitrary line count.
 - Remove duplication only when meaning and change reason are the same.

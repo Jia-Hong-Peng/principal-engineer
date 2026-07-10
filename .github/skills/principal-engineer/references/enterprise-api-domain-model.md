@@ -80,7 +80,7 @@
 - Keep one Ubiquitous Language per context across code, tests, commands, events, repositories, services, packages, APIs, and documents.
 - Treat the same word in different contexts as potentially different concepts; translate instead of sharing domain classes or enums.
 - Classify subdomains as Core, Supporting, or Generic; spend the richest modeling effort on the Core Domain and keep supporting or generic areas simpler.
-- Choose context relationships deliberately: Partnership, Shared Kernel, Customer/Supplier, Conformist, Anticorruption Layer, Open Host Service, Published Language, Separate Ways, or Big Ball of Mud containment.
+- Choose context relationships deliberately: Shared Kernel, Customer/Supplier, Conformist, Anticorruption Layer, Open Host Service, Published Language, or Separate Ways (Evans's original set), plus Partnership and Big Ball of Mud containment (later DDD additions).
 - Shared Kernel requires small stable overlap, joint ownership, and tests; without governance, choose translation instead.
 - Anticorruption Layer means real translation of language, status, protocol, schema, and semantics, not a renamed client wrapper.
 

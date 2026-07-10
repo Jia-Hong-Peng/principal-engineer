@@ -101,7 +101,7 @@
 
 ## Reliability And Deployment
 - Separate deploy from release using flags, routing, canary, blue-green, dark launch, or staged rollout.
-- Every feature flag needs owner, default, expiry, failure behavior, and cleanup plan.
+- Treat feature flags as temporary: each needs an owner, defined default and failure behavior, and a removal path (e.g., an expiry date plus a cleanup task).
 - Canary requires success metrics and automatic or explicit rollback criteria.
 - Backups must be restore-tested; backup existence does not prove recovery.
 - Rollback must cover app version, database migration, config, queue consumers, contracts, and dependent services.
@@ -125,7 +125,7 @@
 
 ## Operations And Incidents
 - Incident response optimizes fast assessment, communication, mitigation, and learning.
-- Define severity by user impact, data risk, security exposure, SLO breach, and business criticality.
+- Define severity by observed and potential impact (users, data, security, commitments), not by engineering effort involved.
 - First assess, then inform; avoid speculative public root cause during active response.
 - Incident report should include title, date, participants, impact, timeline, evidence, root cause, contributing factors, action items.
 - Post-incident review should find system failure modes and contributing conditions.
@@ -145,7 +145,7 @@
 - Documentation is team memory and operational control surface.
 - Write for a reader and task: record, concept, task, reference, or plan.
 - Good docs are correct, findable, readable, structured, and owned.
-- Runbooks must state trigger, diagnosis, action, rollback, escalation, and verification.
+- A runbook must carry a responder from trigger to verified resolution without the author present, including rollback and escalation paths.
 - If docs are unused, check freshness, findability, length, ownership, and maintenance path.
 
 ## Output
