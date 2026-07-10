@@ -15,11 +15,9 @@
 - Output
 
 ## Core
-- Architecture is tradeoff selection under constraints, not a search for a universal best style.
 - Optimize for the top 1-3 quality attributes; more priorities dilute the design.
 - Confirm business goal, change pattern, data ownership, consistency, deployment, operations, and team capability.
 - Prefer decisions that are reversible, observable, governable, and cheap to validate.
-- Architecture without enforcement decays into accidental coupling.
 - Use ADRs for significant decisions: context, decision, alternatives, consequences, compliance, status.
 - Use fitness functions for rules that must stay true: dependency direction, cycles, contracts, performance budget, security, deployability.
 
@@ -89,8 +87,7 @@
 - Store IDs across aggregate or service boundaries, not live object references.
 - Avoid shared canonical models that force unrelated domains to change together.
 - Make source of truth explicit before introducing caches, replicas, projections, indexes, search copies, warehouses, materialized views, or denormalized fields.
-- Treat derived data as rebuildable or repairable, with ownership, propagation path, staleness expectation, lag visibility, and failure handling.
-- Distinguish accepted, persisted, visible, applied, and durable success in write paths.
+- Write-path success semantics (accepted/persisted/visible/applied/durable) and derived-data staleness/lag/rebuild/repair are runtime-observable behavior; canonical in `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics (52-53).
 - Schema, event, enum, status, and payload changes must account for old readers, old writers, old stored data, in-flight messages, rolling upgrades, and cross-service formats.
 - Match partitioning to workload locality and consistency keys; check hot keys, skew, routing metadata, rebalancing, secondary indexes, and cross-partition operations.
 - Use transactions and isolation to protect named invariants; map lost updates, write skew, phantoms, stale reads, and conflict handling to business rules.

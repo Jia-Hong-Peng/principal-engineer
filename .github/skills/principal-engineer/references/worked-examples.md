@@ -28,7 +28,7 @@ switch (order.status) {
 ```
 Finding: adding an enum value is a data-contract change. Every consumer — switches, filters, serializers, UI labels, persistence, docs, tests — must be located before claiming completeness. A missing branch silently mislabels or drops the new value.
 Fix direction: grep sibling values, read every consumer outside the diff, add the branch (or a fail-closed default), and add a test that exercises the new value end to end.
-Anchors: `pre-landing-review-prevention.md` Core Critical Gates (enum/value completeness); `implementation-code-quality.md` Review; `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics.
+Anchors: `pre-landing-review-prevention.md` Required Gate Matrix (enum/value completeness); `implementation-code-quality.md` Review; `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics.
 
 ## Example 2 — Success Side Effect On Happy Path Only
 Change: add auditing/notification to an update path.
@@ -56,7 +56,7 @@ if (user == null) {
 ```
 Finding: read-check-write without atomicity is a race. Under concurrency both callers see `null` and both insert, producing duplicates or a constraint crash. Correctness cannot rest on timing.
 Fix direction: enforce a unique constraint at the store and use insert-or-conflict semantics (upsert / `ON CONFLICT` / catch-unique-and-reload); treat the constraint, not the pre-check, as the source of truth. Add a test that drives two concurrent creates.
-Anchors: `pre-landing-review-prevention.md` Core Critical Gates (concurrency, data integrity); `architecture-system-design.md` Data (distinguish accepted/persisted/durable).
+Anchors: `pre-landing-review-prevention.md` Required Gate Matrix (concurrency, data integrity); `runtime-ops-diagnostics.md` Data-Intensive Runtime Semantics (distinguish accepted/persisted/durable).
 
 ## Example 4 — Single-Implementation Interface With "Not Supported"
 Change: introduce an abstraction "for flexibility".

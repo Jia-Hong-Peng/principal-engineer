@@ -34,7 +34,6 @@
 - Do not load DDD and generic enterprise pattern guidance as equal authority. If DDD is primary, use enterprise patterns only for specific infrastructure choices. If simple enterprise forces dominate, do not add Aggregates, Domain Events, or rich Repositories by ceremony.
 
 ## API Design
-- API is a long-lived contract, not a transport dump.
 - Design public APIs for stability, documentation, security, compatibility, and versioning.
 - Design internal APIs for explicit contracts, performance, ownership, and observability.
 - REST fits public resource-oriented APIs.
@@ -46,34 +45,14 @@
 - Wrap collections in objects when evolution requires metadata, pagination, or links.
 
 ## API Compatibility
-- Treat public fields, status codes, error semantics, pagination, auth requirements, event schemas, and gRPC field numbers as contracts.
-- Breaking changes include removing fields, renaming fields, changing types, adding required fields, reusing gRPC field numbers, and changing error meaning.
-- Add optional fields for compatible evolution when consumers can ignore them.
-- Reserve removed gRPC fields and numbers.
-- Deprecate before removal; provide deadline, replacement, and migration path.
-- Use OpenAPI/AsyncAPI/Protobuf contracts for docs, mocks, validation, generated clients, and CI diff.
-- Contract tests should cover status, body, headers, auth, pagination, empty state, errors, and compatibility.
-- Adding required parameters, changing HTTP methods, default limits, page shape, auth requirements, webhook payloads, or error format is a breaking-change risk unless versioned or bridged.
-- Older clients, mobile apps, SDKs, generated clients, subscribers, and mixed-version deploys must be considered before changing contract semantics.
-- Documentation drift is contract drift: update OpenAPI/Swagger, README, examples, SDK notes, and generated clients when behavior changes.
+- Contract-compatibility gates (breaking-change definition, error-format consistency, doc/client updates, mixed-version and older-client support) are canonical in `pre-landing-review-prevention.md` API And Contract Safety (91-96); apply that gate before landing.
+- API-design-specific contract surface beyond that gate: event schemas and gRPC field numbers are contracts too — reserve removed field numbers rather than reusing them, add optional fields for compatible evolution, deprecate before removal with a deadline and replacement, and back the contract with OpenAPI/AsyncAPI/Protobuf plus contract tests covering status, body, headers, auth, pagination, empty state, and errors.
 
 ## API Security
-- Authentication identifies caller; authorization decides allowed action.
-- API keys identify applications, not users.
-- Access tokens should be short-lived, scoped, revocable, and audience-checked.
-- Validate JWT signature, issuer, audience, expiration, not-before, and required claims.
-- Scope is coarse permission; still enforce object-level and function-level authorization.
-- Check BOLA, BFLA, mass assignment, excessive data exposure, injection, broken auth, DoS, and sensitive data in URL.
-- Use allowlist validation for input, output, and writable fields.
-- Default deny; explicitly allow.
-- Gateway controls ingress policy but never replaces service-level authorization.
-- Audit security-sensitive actions with actor, target, result, reason, and trace ID.
-- Validate user input, query parameters, request bodies, file uploads, webhooks, external responses, and LLM/tool outputs at trust boundaries before persistence or downstream action.
-- Webhook processing needs signature verification and replay protection when supported.
-- User-controlled URLs, redirects, webhook targets, and fetches need SSRF protection and allowlists or blocklists for internal ranges.
-- Avoid command, template, LDAP, header, path traversal, XSS escape hatch, and unsafe deserialization vectors.
-- Secrets, tokens, API keys, credentials, PII, stack traces, SQL, and internal paths must not leak to logs, URLs, errors, user responses, or LLM-visible context.
-- Security-sensitive randomness, hashing, encryption, and secret comparison need current primitives: secure RNG, password hashing, salt, constant-time comparison, and no hardcoded keys or IVs.
+- Authentication, authorization, trust-boundary, secrets, and crypto gates are canonical in `pre-landing-review-prevention.md` Security And Trust Boundaries (83-89); apply that gate before landing.
+- API-specific identity: API keys identify applications, not users; access tokens must be short-lived, scoped, revocable, and audience-checked; validate JWT signature, issuer, audience, expiration, not-before, and required claims.
+- Name API-specific vulnerability classes explicitly — BOLA, BFLA, mass assignment, excessive data exposure — and enforce with object- and function-level authorization plus allowlist validation for input, output, and writable fields.
+- Gateway enforces ingress policy but never replaces service-level authorization; webhooks need signature verification and replay protection when supported; user-controlled URLs, redirects, and fetches need SSRF protection via allowlist/blocklist for internal ranges; audit security-sensitive actions with actor, target, result, reason, and trace ID.
 
 ## Gateway And Mesh
 - API Gateway is for north-south traffic: routing, TLS, auth, rate limit, logging, metrics, tracing, policy.
@@ -90,7 +69,6 @@
 - Create aggregate only for invariants that must be transactionally consistent.
 - Aggregate root is the only external mutation path.
 - One command should usually modify one aggregate.
-- Keep aggregates small; do not enlarge for foreign keys or query convenience.
 - Use domain events for facts after state change, cross-model reaction, async sync, retry, or eventual consistency.
 - Do not create domain events for plain CRUD.
 - Use ACL when external API, database, event, naming, or status model must not leak into domain.
@@ -124,8 +102,7 @@
 
 ## Transactions And Consistency
 - Application service owns transaction boundary.
-- One command usually equals one transaction.
-- Strong invariants live inside one aggregate and one transaction.
+- One command usually equals one transaction (see Minimal DDD: aggregates exist for transactionally consistent invariants).
 - Cross-aggregate rules use events, compensation, or eventual consistency.
 - Distributed transaction is not the default.
 - Async handlers must be idempotent and tolerate duplicates, retries, out-of-order delivery, and partial failure.

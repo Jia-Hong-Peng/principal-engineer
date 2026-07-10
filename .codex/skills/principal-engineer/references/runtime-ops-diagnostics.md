@@ -53,7 +53,7 @@
 - Caches, indexes, projections, search copies, materialized views, warehouses, and denormalized fields are derived data; define staleness, lag, propagation, rebuild, and repair.
 - Jobs, consumers, CDC, stream processors, and replayable batch work need duplicate, replay, ordering, retention, side-effect, and recovery safety.
 - Preserve only the ordering the business logic needs, scoped by key, stream, partition, record, entity history, or stronger contract.
-- Schema, message, event, enum, API, and payload meaning changes need mixed-version compatibility for old readers, old writers, old data, and in-flight messages.
+- Schema evolution decisions (mixed-version compatibility for old readers, old writers, old data, and in-flight messages) are canonical in `architecture-system-design.md` Data; this file's concern is observing and diagnosing that compatibility at runtime.
 - When weakening consistency or isolation, map each anomaly to the invariant it can break and add versioning, compare-and-set, locks, serializable isolation, reconciliation, or compensation where needed.
 - Timestamps, leases, leadership, locks, majorities, and coordination services need clock, quorum, session, stale authority, and fencing assumptions.
 - New enum/status/mode/type values are data contracts; trace allowlists, filters, switches, serializers, renderers, jobs, analytics, and tests before shipping. (Canonical gate matrix: `pre-landing-review-prevention.md`.)
@@ -111,8 +111,7 @@
 - Release checks should validate version, configuration, dependency readiness, migration state, queue consumers, health checks, logs, metrics, and rollback path.
 - Canaries and staged rollouts need stop conditions tied to user impact, error rate, latency percentiles, saturation, queue age, dependency failures, and business-critical flows.
 - Do not concentrate demand through synchronized jobs, uncontrolled fan-out, cache stampedes, fragile chattiness, or coordinated retries.
-- Data migrations need reversibility, data-loss review, lock-duration review, batched backfill, index strategy, and old-code/new-schema compatibility.
-- Adding NOT NULL, dropping columns, narrowing types, renaming tables or columns, and removing tables require staged deploy planning unless the data and code references prove safe.
+- Migration release-safety gates (reversibility, lock-duration, batched backfill, old-code/new-schema and new-code/old-data compatibility, staged rollout for NOT NULL/rename/drop/narrowing changes) are canonical in `pre-landing-review-prevention.md` Data Migration Safety (98-103); apply that gate before rollout.
 - Publish/distribution changes need artifact path, version/tag format, platform matrix, secret handling, and idempotent rerun review.
 
 ## Security Operations
@@ -122,7 +121,6 @@
 - Zero trust means every user, service, device, and network path needs identity, authorization, and auditability.
 - Secrets must be centralized, rotated, revocable, least-privileged, inventoried, and kept out of source, logs, images, and ad hoc env sprawl.
 - CI/CD, VCS, build environment, artifact repo, logs, and production credentials are part of the attack surface.
-- IAM requires authentication, authorization, and activity logging.
 - Prefer default-deny network policy and explicit allowed paths.
 
 ## Operations And Incidents

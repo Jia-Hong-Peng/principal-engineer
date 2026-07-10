@@ -4,7 +4,6 @@
 - Purpose
 - How To Use This Gate
 - Required Gate Matrix
-- Core Critical Gates
 - Evidence Report Template
 - Fail Conditions
 - Noise Controls
@@ -45,16 +44,6 @@
 | Refactor or legacy change | Behavior preservation | Characterization coverage or equivalent existing tests, unchanged public contract, scoped diff |
 | New abstraction, interface, inheritance, pattern, shared helper | Abstraction fitness | Real variation point, current consumers, reduced caller complexity, no unsupported methods, contract or behavior coverage |
 
-## Core Critical Gates
-- SQL and data writes: no string-interpolated SQL, unsafe raw queries, validation bypass, check-then-write races, or unindexed uniqueness assumptions.
-- Concurrency: read-check-write, find-or-create, status transitions, counters, idempotency keys, and queue consumers need atomicity, constraints, or retry-safe handling.
-- Trust boundaries: user input, external services, files, webhooks, LLM/tool output, generated URLs, and structured outputs need validation before persistence, network fetch, mail, shell, or downstream effects.
-- Shell and code execution: never pass interpolated input through shell strings, `eval`, `exec`, deserialization, templates, or subprocess APIs without safe argument boundaries and explicit sandboxing.
-- Enum/value completeness: when adding a status, enum, tier, mode, type, permission, plan, or constant, grep sibling values and read every consumer outside the diff: allowlists, filters, switches, renderers, serializers, docs, tests, and persistence.
-- Abstractions: new interfaces, factories, strategies, base classes, adapters, value objects, and shared helpers need evidence that they remove current risk or caller complexity. Do not ship principle-driven churn.
-- Substitutability: every implementation of a port or base type must preserve the caller-visible contract, error meaning, lifecycle, and invariants; "not supported" methods are review findings unless explicitly modeled.
-- Completeness gaps: do not ship 80-90% implementations when the missing error path, edge case, docs update, or negative test is small and in scope.
-
 ## Evidence Report Template
 Use this shape internally, and include the compact version in the final response for meaningful code changes:
 
@@ -76,6 +65,7 @@ Rules:
 - Do not declare landing-ready if a required auth, data integrity, migration, API contract, or trust-boundary gate is unverified.
 - Do not hide missing tests behind "manual inspection" when the behavior is security-sensitive, data-loss-prone, contractual, or concurrency-sensitive.
 - Do not turn out-of-scope follow-up into silent debt. Name the owner surface and why it is outside this change.
+- Do not ship 80-90% implementations when a missing error path, edge case, docs update, or negative test is small and in scope.
 
 ## Noise Controls
 - Do not add abstractions, tests, docs, indexes, or compatibility layers only to satisfy the checklist when the touched surface does not require them.
@@ -127,6 +117,7 @@ Rules:
 - Watch conditional side effects: every branch that changes state should update related records, emit required events, log honestly, and preserve invariants.
 - Do not reach into another module's internals or bypass the intended service/model/application boundary.
 - Reject fat interfaces, empty implementations, "not implemented" branches, hidden service locators, framework objects in core policy, and wrappers that only forward calls without hiding volatility.
+- New interfaces, factories, strategies, base classes, adapters, value objects, and shared helpers need evidence they remove current risk or caller complexity (name the variation point, current consumers, hidden cost) — principle-driven churn without that evidence is a finding. Every implementation of a port or base type must preserve the caller-visible contract, error meaning, lifecycle, and invariants; unsupported operations, weakened preconditions, stronger caller obligations, or tests that pass only by accident are findings, not deferrable.
 - If the change creates follow-up work that is genuinely out of scope, record it explicitly instead of hiding it as "later".
 
 ## Adversarial Final Pass

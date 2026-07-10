@@ -3,7 +3,9 @@
 ## Contents
 - Core
 - Change Discipline
+- Legacy Change Discipline
 - Structure
+- Responsibility And Object Design
 - Functions
 - Naming
 - State And Data
@@ -16,16 +18,8 @@
 - Anti-Patterns
 
 ## Core
-- Optimize for code that is correct, readable, testable, maintainable, and safe to change.
-- Correctness beats cleverness, brevity, and style preference.
-- Code is read more than written; name and structure for the next maintainer.
-- Lower complexity before adding machinery.
-- Do not abstract until there is real variation or stable repetition.
-- Do not optimize without measurement and a known hot path.
-- Follow local project style, tools, structure, and conventions.
-- Treat reduced cognitive load as a construction outcome: fewer hidden facts, fewer jumps, fewer caller obligations, and clearer ownership.
-- Own the result: surface risks and tradeoffs instead of blaming tools, framework defaults, schedule pressure, or existing code.
-- Keep one authoritative representation for each system fact; derive, generate, validate, or trace duplicates instead of letting them drift.
+- Lower complexity before adding machinery; do not abstract until there is real variation or stable repetition (measurement-before-optimizing gate: see Performance).
+- Treat reduced cognitive load as a construction outcome (fewer hidden facts, fewer jumps, fewer caller obligations, clearer ownership), and keep one authoritative representation for each system fact — derive, generate, validate, or trace duplicates instead of letting them drift.
 
 ## Change Discipline
 - Identify the behavior change before editing.
@@ -96,7 +90,6 @@
 - Minimize variable scope, lifetime, mutability, and semantic reuse.
 - Initialize variables at declaration when possible.
 - Use types to encode constraints and prevent invalid states.
-- Avoid primitive obsession for money, ID, date ranges, status, quantity, percentage, and permissions.
 - Keep mutable shared state out of core logic.
 - Isolate global state, time, randomness, I/O, and environment behind boundaries.
 - Choose data structures by access pattern, invariants, and change cost.
@@ -120,11 +113,7 @@
 - A bug fix should add a regression test when practical.
 - Hard-to-test code often signals hidden coupling, excess responsibility, or side effects in the wrong place.
 - Coverage is a signal, not proof.
-- Negative paths are first-class: validation failures, unauthorized/denied access, rejected input, dependency failures, catch branches, and early returns need tests when touched.
-- Edge coverage should include null, empty, zero, negative, one item, max size, unicode, special characters, and concurrency where the code can observe them.
-- Tests must not depend on shared mutable state, order, wall clock, timezone, locale, random data without seed, real networks, or sleep-based timing.
-- Security enforcement tests should prove denial, malicious-input rejection, rate-limit blocking, CSRF/CORS behavior, webhook signature failure, and sanitized output where relevant.
-- Changed public functions, handlers, jobs, utilities, and API-facing code need direct contract coverage unless stronger integration coverage already proves the same behavior.
+- Gate-level test requirements (negative paths, boundary/edge values, test isolation from shared state/clock/network, security-enforcement tests, changed-contract coverage) are canonical in `pre-landing-review-prevention.md` Tests That Prevent Findings (76-81); apply that gate for touched surfaces.
 - Test names should describe concrete domain behavior, not implementation mechanics.
 - Use real objects for pure domain behavior; use fakes or integration tests for boundaries where mocks would only prove the mock configuration.
 - Contract tests are valuable when multiple implementations must obey one interface: in-memory and database repositories, payment gateways, storage adapters, message publishers, feature flags, or SDK clients.
@@ -171,18 +160,9 @@
 - Re-measure correctness and performance after optimization.
 
 ## Review
-- Review order: behavior bug, security, data loss, transaction consistency, concurrency, contract break, dependency direction, boundary leak, tests, maintainability, naming, style.
-- Findings must include concrete risk and actionable fix.
-- Do not block on style when formatter/linter should decide.
-- Do not request broad refactor without explaining the risk it reduces.
-- If no issue, say so and name residual test or runtime risk.
-- In legacy areas, review no tests around modified logic, mixed structural and behavioral edits, hard-coded collaborators, global/static reach-through, constructor side effects, and business logic trapped in framework entry points as change-safety risks.
-- In refactoring patches, verify the patch has a named smell, behavior preservation evidence, reviewable steps, and a stop condition.
-- Before finalizing a change, run a scope-aware pre-landing prevention pass for staff-review catch points: test gaps, dead code, magic literals, stale comments, duplicated setup, conditional side effects, boundary violations, and unverified claims. (Canonical gate matrix: `pre-landing-review-prevention.md`.)
-- When introducing enum/status/mode/type values, search sibling values and read all consumers outside the diff before claiming completeness.
-- Conditional side effects are review blockers: if one branch updates state, emits events, logs success, invalidates cache, or records audit data, verify sibling branches preserve the same required invariants.
-- Review new abstractions with the same suspicion as new behavior: name the variation point, current consumers, hidden cost, contract, and why local duplication or a direct call is not safer.
-- Review inheritance and interface changes for LSP/ISP failures: unsupported operations, weakened preconditions, stronger caller obligations, changed error semantics, lifecycle surprises, or implementations that only satisfy tests by accident.
+- Review order: behavior bug, security, data loss, transaction consistency, concurrency, contract break, dependency direction, boundary leak, tests, maintainability, naming, style; findings need concrete risk and an actionable fix, style is not a blocker when a formatter/linter should decide, and a broad-refactor request needs the risk it reduces named.
+- In legacy areas, treat no tests around modified logic, mixed structural/behavioral edits, hard-coded collaborators, global/static reach-through, constructor side effects, and business logic trapped in framework entry points as change-safety risks; in refactoring patches, verify a named smell, behavior-preservation evidence, reviewable steps, and a stop condition.
+- If no issue, say so and name residual test or runtime risk. Before finalizing, run the pre-landing prevention pass (`pre-landing-review-prevention.md`) for gate coverage — enum/value completeness, conditional side effects, and abstraction/substitutability fitness (Maintainability And Scope) are canonical there; do not finalize with a required gate unverified.
 
 ## Anti-Patterns
 - Clever code that saves characters but increases reasoning cost.
