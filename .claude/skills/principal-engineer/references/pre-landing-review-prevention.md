@@ -2,7 +2,8 @@
 
 `playbook-landing-proof.md` owns the terminal procedure and READY/NOT READY/BLOCKED status.
 Use this file only to select evidence for surfaces actually touched by the planned and final
-diff. Do not load or satisfy unrelated rows.
+diff. Do not load or satisfy unrelated rows. For a repository-wide gap scan (not a specific
+diff), draw read-only predicates from `audit-scan-checklists.md` and report hits as candidates.
 
 ## Required Gates
 

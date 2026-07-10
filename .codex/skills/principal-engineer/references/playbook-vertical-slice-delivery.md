@@ -73,7 +73,7 @@ Keep this in working memory unless a durable design artifact is requested.
 | Existing structure blocks the slice | Run one bounded loop from `playbook-safe-existing-code-change.md`, then return |
 | Public API/schema/event/storage, partition, distributed consistency, or migration decision | `playbook-technical-decision.md` |
 | Runtime cause is unknown | `playbook-runtime-diagnosis.md` |
-| New repository | Establish one build/test entry and one end-to-end slice; do not scaffold empty pattern layers |
+| New repository | Establish one build/test entry and one end-to-end slice; check the setup against the Day-One Baseline section of `audit-scan-checklists.md` and report unmet items as candidates. Do not scaffold empty pattern layers, and do not provision CI, branch protection, or deployment without explicit authorization |
 | User requested only design | Produce the decision artifact, but do not claim implementation |
 
 Never redispatch an ancestor. Return the newly discovered structural, runtime, or decision

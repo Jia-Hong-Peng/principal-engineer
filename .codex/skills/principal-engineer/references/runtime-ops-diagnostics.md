@@ -56,7 +56,7 @@ Classify workload before selecting or resizing infrastructure:
 - Operation mix, payload/cardinality distribution, hot keys, cache outcomes, retries, and background amplification.
 - Steady peak versus cold start, deploy, failover, rebalance, recovery, and catch-up transient.
 
-Define capacity by acceptable completed output, tail latency, errors/rejections, and headroom, not resource count. Record offered, accepted, completed, rejected, and retried work separately.
+Define capacity by acceptable completed output, tail latency, errors/rejections, and headroom, not resource count. For transaction services, 50% average busy can already be overload — load spikes to ~3x average within seconds; 98% busy is healthy only for batch work. Record offered, accepted, completed, rejected, and retried work separately.
 
 For finite queues/pools use arrival rate, service rate, depth, oldest age, wait distribution, worker utilization, and downstream saturation. Queue growth means arrivals exceed departures; adding workers only helps if the next resource has capacity.
 
@@ -130,7 +130,7 @@ For high-rate flight recording:
 
 Minimum trace fields depend on the hypothesis, but commonly include service/version/environment/instance, request/trace/span/parent, operation/stage/status/error, offered/started/completed, bytes, retry/fan-out, dependency/cache, queue, thread/CPU, and config/build version.
 
-For RPC measure client send `T1`, server receive `T2`, server send `T3`, client receive `T4` where clocks can be calibrated. Separate client elapsed, server work, and unclassified/network/scheduling gaps; account for clock offset/drift and use kernel/socket evidence when application spans leave a gap.
+For RPC measure client send `T1`, server receive `T2`, server send `T3`, client receive `T4` where clocks can be calibrated. Separate client elapsed, server work, and unclassified/network/scheduling gaps; account for clock offset/drift and use kernel/socket evidence when application spans leave a gap. Compute `slop = (T4-T1) - (T3-T2) - estimated transfer time`; in-building switch hardware rarely adds over ~20 usec, so millisecond-scale slop is software delay — investigate both endpoint hosts before blaming the network.
 
 ## Complete Time Accounting
 For one execution context, or for non-overlapping intervals on one request's critical path, require:
@@ -158,7 +158,7 @@ Classify the slow sample:
 
 Align samples two ways:
 - Wall-clock alignment reveals shared bursts, jobs, interference, deploys, backups, and periodic work.
-- Start alignment compares stages/path/gaps across fast, medium, and slow transactions.
+- Start alignment compares stages/path/gaps across fast, medium, and slow transactions. When per-transaction samples are sparse, bucket transactions by power-of-2 elapsed time and aggregate profile samples per bucket; chase 5x/100x outliers, not variation under 2x.
 
 For each wait collect the owner and duration:
 - CPU: runnable-at to scheduled-at, per-core queue, affinity/quota/steal/throttle.
@@ -194,7 +194,7 @@ Fix the largest causal segment, then re-account. Confirm work was not merely mov
 - Trace context must cross sync and async boundaries.
 - Alert only when action is required; remove, route, or silence unactionable noise.
 - Too early aggregation loses debug detail; too late aggregation increases cost.
-- Observability overhead must not become the bottleneck.
+- Observability overhead must not become the bottleneck: budget live instrumentation under 1% CPU/memory (2-10% occasionally tolerable, 20% never — it inflates transaction latency nonlinearly); tolerate up to ~20x slowdown only in offline analysis.
 - Boundary telemetry should include latency, throughput, error, saturation, retry, breaker, queue, dependency, version, configuration, health, and runtime signals.
 - Avoid secrets in telemetry and avoid retry-storm log spam.
 - Derived data needs observability for lag, dropped events, replay progress, rebuild progress, poison messages, and repair actions.
@@ -211,7 +211,7 @@ Fix the largest causal segment, then re-account. Confirm work was not merely mov
 - Production paging creates long tail latency; avoid it.
 - Pointer-heavy structures can waste cache lines and increase memory stalls.
 - Small synchronous I/O and fsync often create latency spikes.
-- Sequential large I/O is usually cheaper than random small I/O.
+- Sequential large I/O is usually cheaper than random small I/O; size each access so useful transfer time >= device startup time (roughly ~1 MB per disk access, ~64 KB per SSD access).
 - Network diagnosis must check DNS, TLS, routing, firewall, load balancer, client, server, retransmit, and dependency latency.
 - Physical distance imposes latency; use CDN, caching, regional placement, or async flow for global systems.
 - Query paths need index review for new filters, sort orders, joins, foreign keys, and composite predicates.

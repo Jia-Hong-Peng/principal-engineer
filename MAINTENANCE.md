@@ -81,6 +81,18 @@ package。整合時已按 trigger/mechanism/decision/check/stop condition 去重
 
 新增規則前先確認 canonical 家；相同判準不要在多檔各寫一份略有差異的版本。
 
+### 2026-07-10 note_fable 整合補記
+
+- `../PRE-principal-engineer/data/note_fable/`（同 26 本書的 Fable 5 繁中蒸餾版，4,018 招式＋
+  2,379 稽核 checkbox）為第二個維護期語料，與 note-5.6 同規則：只作來源，不進 runtime package，
+  不逐本增生 reference，不搬書名/章節。
+- **掃描判準（repository-wide scan predicates）的 canonical 家＝`audit-scan-checklists.md`**；
+  該檔由 P1 step 2/step 6、P2 New repository 分支與 pre-landing 的 gap-scan 指標行引用，
+  只供判準、無 workflow、無完成權。新增掃描判準一律進該檔；既有 topic reference 中重疊的
+  判準維持現狀（歷史存量），要遷移必須附 removal map。
+- 該檔極性約定：YES=healthy；audit 語境所有 check action 取唯讀形態，非唯讀動作標
+  authorization-gated。改動該檔時不得破壞這兩個約定。
+
 ## 7. Action-first execution ownership
 
 知識覆蓋不等於可執行 Skill。`note-5.6` 原本反覆出現的 Agent execution contract

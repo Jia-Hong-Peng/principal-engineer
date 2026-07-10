@@ -24,7 +24,7 @@
 
 **Defer with a trigger** when S has value but does not help the current outcome, needs more runtime/change evidence, or can be migrated incrementally later. Record the first independent step, trigger, evidence, and cost it will remove.
 
-**Do not tidy** when the only reason is aesthetics, principle compliance, a guessed future variation, an inactive area, or a regression/migration cost larger than the current obstacle.
+**Do not tidy** when the only reason is aesthetics, principle compliance, a guessed future variation, an inactive area, or a regression/migration cost larger than the current obstacle. A single tidying stretch beyond about one hour usually means the minimal structural change set supporting the next behavior change has been lost; stop and return to the behavior change.
 
 Decision questions:
 1. What is the next observable B change?

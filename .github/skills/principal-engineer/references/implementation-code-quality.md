@@ -161,8 +161,8 @@ Flaky evidence is a defect. Preserve the first failure, classify environment/tes
 - Prefer algorithm, data structure, I/O, network, and database fixes before micro-optimization.
 - Cache only when invalidation, memory, freshness, and failure behavior are designed.
 - Concurrency increases state and timing complexity; encapsulate it.
-- Calculate the theoretical maximum end-to-end gain before micro-optimizing a small fraction of work. Stop when the local speedup cannot materially move the quality contract.
-- Treat cache as derived state and authorization context: define key, freshness, invalidation, negative/error caching, TTL/capacity/eviction, stampede, cold start, multi-node consistency, and unavailable behavior.
+- Calculate the theoretical maximum end-to-end gain before micro-optimizing a small fraction of work. Rank optimization targets by request rate x p99 latency (total work), not single-call latency, and recompute the ranking after each fix — the bottleneck moves. Stop when the local speedup cannot materially move the quality contract.
+- Treat cache as derived state and authorization context: define key, freshness, invalidation, negative/error caching, TTL/capacity/eviction, stampede, cold start, multi-node consistency, and unavailable behavior. For time-based eviction, derive TTL from the per-key request inter-arrival distribution: a TTL at the p90 interval serves ~90% of requests from cache.
 - Treat concurrency as a capacity experiment, not free speed. Measure pool/queue/lock/downstream saturation, context switching, memory, tail latency, and rejection after changing worker count.
 
 ## Technical Slice, Deletion, And Public Surface

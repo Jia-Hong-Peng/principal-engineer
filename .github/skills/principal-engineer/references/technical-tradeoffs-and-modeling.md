@@ -258,7 +258,7 @@ Keep calibration, verification, and validation distinct:
 
 Prefer evidence in this order: same-version production telemetry, production-like load test, executable prototype, comparable existing system, specification/capacity derivation, bounded expert estimate.
 
-Separate calibration and validation data. Compare signed/absolute/relative error, percentile error, bottleneck location, candidate ordering, and threshold classification. A model can rank options while missing absolute values; say exactly what it is fit to decide.
+Separate calibration and validation data. Compare signed/absolute/relative error, percentile error, bottleneck location, candidate ordering, and threshold classification. For simulation-based models, iterate calibration on resources with prediction error above ~20%; accept the model into ongoing monitoring only when validation shows mean absolute utilization error under 2 percentage points and the top decile under 5. A model can rank options while missing absolute values; say exactly what it is fit to decide.
 
 Run sensitivity analysis across evidence-based parameter ranges. Spend new measurement effort on high-sensitivity, low-confidence inputs. If small plausible changes reverse the winner, do not present a single confident choice; either improve evidence or choose the robust/reversible candidate.
 

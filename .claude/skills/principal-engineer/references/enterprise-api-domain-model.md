@@ -112,7 +112,7 @@ WHERE id = :id AND version = :expected
 ```
 Treat zero affected rows as a conflict; include delete and relevant read-set versions. Reload and rerun policy before retrying. Never overwrite silently.
 
-Use pessimistic locking only when conflict frequency or late-conflict cost justifies reduced concurrency. Define lock owner, order, scope, timeout, lease/recovery, monitoring, and crash release. Align coarse lock scope with the invariant, not implementation convenience.
+Use pessimistic locking only when conflict frequency or late-conflict cost justifies reduced concurrency. Define lock owner, order, scope, timeout, lease/recovery, monitoring, and crash release. For offline business locks spanning multiple system transactions (distinct from short database locks): acquire before load, lock the ID not the object, and throw immediately on lock failure instead of waiting. Align coarse lock scope with the invariant, not implementation convenience.
 
 Audit bulk updates, raw SQL, imports, migrations, callbacks, and secondary writers that can bypass implicit version/locking mechanisms.
 
@@ -233,7 +233,7 @@ Derive an aggregate:
 5. Attack the boundary with concurrent commands and version conflicts.
 6. Move cross-boundary rules to explicit eventual consistency only when intermediate state is acceptable and repairable.
 
-Measure aggregate root count, child cardinality, serialized/load size, query count, update frequency, conflict rate, and transaction p95. A hot or conflict-heavy root may indicate an oversized boundary, not a database tuning problem.
+Measure aggregate root count, child cardinality, serialized/load size, query count, update frequency, conflict rate, and transaction p95. Reference values from one real project: ~70% of aggregates were a single root entity plus value properties, the rest only 2-3 entities; a worst-case single-request load of 25-50 objects still counts as small. A hot or conflict-heavy root may indicate an oversized boundary, not a database tuning problem.
 
 Use a Specification only when one domain predicate genuinely needs multiple uses such as validation, selection, or explanation. Do not leak SQL/query-provider behavior through it.
 

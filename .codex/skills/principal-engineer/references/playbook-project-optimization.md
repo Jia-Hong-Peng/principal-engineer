@@ -29,6 +29,7 @@ Keep the card in working memory unless the user requested a durable audit artifa
      highest-value path, and one on the clearest change-friction, failure, or evidence gap.
    - A probe is a caller/contract trace, focused static search, test/build comparison, history
      check, reproduction, query/trace, or other falsifiable repository-native check.
+   - Domain sections in `audit-scan-checklists.md` supply ready-made read-only probe predicates.
 
 3. **Promote one causal finding**
    - A lead becomes actionable only after proving entry/trigger, first wrong state or structural
@@ -57,7 +58,9 @@ Keep the card in working memory unless the user requested a durable audit artifa
    - Search the touched scope and requested outcome once for the same mechanism.
    - Continue only for another proved finding required by the requested outcome. Otherwise stop
      with changed artifacts, commands, gates, rollback, and the exact stop reason.
-   - Produce a ranked backlog only when requested.
+   - Produce a ranked backlog only when requested. For an explicitly requested full scan or
+     backlog, sweep the relevant sections of `audit-scan-checklists.md` and list hits as
+     non-promoted candidates, separated from proved findings.
 
 ## Invalid Outcomes
 
