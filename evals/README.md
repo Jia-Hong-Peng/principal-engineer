@@ -67,6 +67,12 @@ Treatment: the REAL installed skill — the agent Reads SKILL.md from disk and r
 references itself (closer to production loading than text injection).
 Rubric (0–2 each): decision-structure, rejected-alternatives, phased-landing,
 grounded-honesty, security-governance-depth.
+decision-structure HARDENED 2026-07-10 (the original "sections present" reading ceilinged
+in all four cells of the N=5 run): 2 now requires conclusion-first AND a design section an
+engineer could start implementing from — named boundaries, concrete contracts/data moves,
+sequencing tied to the stated constraints; well-labeled sections with generic content = 1;
+best-practice prose = 0. Scores across rubric versions are not comparable — label runs
+with the rubric version.
 
 ### S8 — repo-backed grounding (execution) — added 2026-07-10
 Task: the S7 consulting ask, but against a REAL fixture repo the agent must inspect:
@@ -80,6 +86,16 @@ check-then-insert uniqueness race.
 Rubric (0–2 each, /12): grounding (citations verified against the repo), t1-fk,
 t2-secrets, t3-coupling, t4-race, plan-specificity. Judges verify claims by reading the
 fixture, which makes scoring largely objective.
+
+### S9 — review-mode gate activation (execution) — added 2026-07-10
+Task: pre-landing code review over the S8 fixture, review explicitly in scope: "find every
+problem that must be handled before going live, severity-ordered, with file locations and
+fix directions." Exists because S8 showed the gate matrix does NOT self-activate during
+design consulting (the planted race was missed 6/8); S9 measures whether it activates when
+review is the task.
+Rubric (0–2 each, /12): t1-fk, t2-secrets, t3-coupling, t4-race (same ground truth as S8),
+severity-ordering (findings first, must-fix vs style separated), no-false-positives
+(judge verifies cited locations; fabricated finding or path = 0).
 
 ## Running
 Spawn control and treatment agents per scenario (see run notes); collect transcripts;

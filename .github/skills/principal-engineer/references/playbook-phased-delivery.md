@@ -25,6 +25,7 @@
 
 ## Phase 0 — Inventory And Risk
 - Build ground truth with repo-native evidence: grep the call sites, list dependencies and versions, read the schemas and contracts, identify data volumes and traffic, name current owners.
+- Run the review-prevention gate lenses over the code being inventoried (`pre-landing-review-prevention.md` Required Gate Matrix): check-then-write races, trust boundaries, enum/value consumers, migration hazards, and N+1 patterns in the touched area are Phase 0 facts about the system — put them in the risk register now, do not wait for review time to notice them.
 - Write down: scope in/out, blast radius, irreversible steps, external dependencies (credentials, windows, approvals), success metrics, and the risk register.
 - Identify decisions only a human can make and get them now, not mid-rollout.
 - Exit: written scope + risk register + measurable success criteria, reviewed by the affected owners.

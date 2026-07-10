@@ -183,6 +183,7 @@ Treat every conclusion and artifact you produce as a hypothesis until falsified,
   8. Monitoring and operations — signals, alerts, and who owns them after landing.
   9. Rollback / exit — how each phase is undone; name any irreversible step and its guard.
   10. Risks and open questions — assumptions to verify; decisions needed and from whom.
+- The ten sections bound the SHAPE of the answer, not its size: match total volume to the ask. A one-page request gets one page — compress sections into single lines rather than omitting them; padding a section to look thorough is as wrong as skipping it.
 - Hard rejections — an answer with any of these is unfinished, regardless of how correct it sounds:
   - best-practice prose or tool name-dropping without a decision and an implementation path
   - any of the ten sections absent without a stated one-line reason
