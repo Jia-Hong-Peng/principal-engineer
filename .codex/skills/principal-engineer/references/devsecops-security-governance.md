@@ -19,6 +19,7 @@
 - Security controls that live in the pipeline are enforceable; security controls that live in a wiki are optional. Convert policy to automation (see `playbook-phased-delivery.md` Phase 3).
 - A control that does not block anything is telemetry, not a control. Decide per control: gate, warn, or measure — and say which.
 - Optimize for developer feedback latency: a slow security stage gets bypassed culturally long before it gets bypassed technically.
+- Every hard gate ships with a break-glass path, designed on day one: an emergency merge/deploy route with named approvers, automatic audit trail, and mandatory post-hoc review. Hard gates without a governed emergency path do not stop bypass — they force it underground.
 
 ## Pipeline Design Rules
 - Pipeline definitions are code: reviewed, versioned, revertable; a pipeline change can ship malware, so review it like production code.
@@ -26,8 +27,7 @@
 - Build once, sign, promote the same artifact through environments; rebuilding per environment invalidates what earlier gates proved. Signing only pays off if promotion verifies: deploy stages must check signature/provenance before rollout, or the signature is theater.
 - Pin third-party pipeline actions/steps to immutable versions; an unpinned action is an unreviewed dependency with pipeline credentials.
 - Treat caches, build containers, and runners as attack surface: isolate per trust level, rebuild regularly, never share runners between public and private trust zones.
-- Protect the trunk with required checks, and keep required checks fast enough that nobody campaigns to remove them.
-- Design the break-glass path on day one: an emergency merge/deploy route with named approvers, automatic audit trail, and mandatory post-hoc review. Hard gates without a governed emergency path do not stop bypass — they force it underground.
+- Protect the trunk with required checks, and keep required checks fast enough that nobody campaigns to remove them; pair them with the break-glass path required by Core.
 
 ## Scanning Integration And Finding Governance
 - Place scanners at two points: fast incremental checks on PR (feedback in minutes), deep/full scans on schedule (completeness). Gating a PR on a 40-minute full scan trades trunk safety for bypass pressure.
