@@ -148,12 +148,15 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Does every handler enforce object-level authorization (changing a resource ID cannot reach another user's data), with non-guessable external IDs? — trace a handler's authorization check; read ID generation
 - [ ] Do PUT/PATCH endpoints bind only allowlisted writable fields (no whole-body mass assignment)? — read model-binding code
 - [ ] Is all SQL parameterized, never built by string concatenation? — grep query construction for interpolation
+- [ ] Is user- or external-controlled data context-escaped or auto-encoded before it reaches a raw-HTML or no-escape render sink (XSS)? — grep raw-render sinks (raw HTML assignment, dangerous inner-HTML, template autoescape-off) on paths carrying request/user data
 - [ ] Are the repository and its full git history free of secrets, connection strings, and credentials, with none flowing into logs? — scan history with a secrets detector and grep log statements near credentials; report file/line locations and counts only, never copy matched values into any artifact or conversation, treat hits as already leaked (rotation is a separate authorized action), and do not rewrite history
 - [ ] Are tokens short-lived (typically 1-60 minutes), JWTs signature-verified before claims are read, and API keys cryptographically random (typically 32 characters / 256 bits)? — read auth middleware and key generation
+- [ ] Are cryptographic primitives sound — no MD5/SHA-1 for signatures or token derivation, passwords via a salted adaptive KDF (bcrypt/scrypt/argon2/PBKDF2), and secrets/tokens/HMACs compared constant-time? — read hashing, password-storage, and secret-comparison sites
 - [ ] Is the OAuth grant matched to client type (auth code for confidential, PKCE for public, client credentials for machine), with no Implicit/ROPC remnants? — read auth configuration
 - [ ] Are internal service-to-service calls authenticated (mTLS/service identity) with default-deny network policy? — read mesh/network policy config
 - [ ] Are admin/management endpoints network-separated from the service plane, with egress restricted so leaked credentials cannot freely exfiltrate? — read IaC/NetworkPolicy/firewall rule files and deployment manifests
 - [ ] Is the codebase free of dangerous constructs (unbounded input reads, eval on external strings, deserialization that can execute code)? — grep the known-dangerous API list for the language
+- [ ] Are OS/shell commands built from argument arrays rather than by interpolating user-controlled data into a shell-parsed string? — grep shell-exec/subprocess sites for interpolation into the command string
 - [ ] Are regexes applied to untrusted input screened for catastrophic backtracking, with timeouts? — scan regex literals on input paths
 - [ ] Are dependencies pinned via a committed lockfile, with CVE scanning as a blocking CI gate and licenses reviewed on intake? — read manifest/lockfile and pipeline config
 - [ ] Do services and DB accounts run least-privilege, with no shared all-powerful account across workloads? — read infra/IAM definitions
@@ -202,6 +205,7 @@ A new repository should also trivially pass every other section; sweep them once
 
 - [ ] Are structural and behavioral changes separated into distinct commits/PRs (no rename+logic mixed diffs)? — sample the last 20 commits
 - [ ] Are schema migrations versioned, append-only, and replayable to reconstruct any environment, with shared-schema changes done expand/contract? — read the migrations directory and history
+- [ ] Do migrations avoid narrowing a column's type (width or precision reduction) that can silently truncate existing data without a pre-check or backfill? — read ALTER/column-modify statements for width or precision reductions
 - [ ] Do all branches integrate with the main branch within a few days? — list branches with age and divergence
 - [ ] Is generated code never hand-edited, with the generator failing loudly on unsupported input? — read generator config and ownership markers; (authorization-gated) diff a regeneration
 - [ ] Is the build reproducible (pinned toolchain and dependencies; years-old releases rebuildable)? — read toolchain/dependency pinning and build docs; (authorization-gated) attempt a historical rebuild
