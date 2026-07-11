@@ -58,7 +58,7 @@ Classify workload before selecting or resizing infrastructure:
 
 Define capacity by acceptable completed output, tail latency, errors/rejections, and headroom, not resource count. For transaction services, 50% average busy can already be overload — load spikes to ~3x average within seconds; 98% busy is healthy only for batch work. Record offered, accepted, completed, rejected, and retried work separately.
 
-For finite queues/pools use arrival rate, service rate, depth, oldest age, wait distribution, worker utilization, and downstream saturation. Queue growth means arrivals exceed departures; adding workers only helps if the next resource has capacity.
+For finite queues/pools use arrival rate, service rate, depth, oldest age, wait distribution, worker utilization, and downstream saturation. Queue growth means arrivals exceed departures; adding workers only helps if the next resource has capacity. Estimate backlog recovery as drain time = backlog / (service rate - arrival rate), valid only while service rate exceeds arrival rate.
 
 Autoscaling still needs maximum/quota/supply, signal delay, provisioning and warm-up, cold cache, scale-in data movement, cost guardrail, and overload behavior during the gap. “Scales automatically” is not a deadline guarantee.
 

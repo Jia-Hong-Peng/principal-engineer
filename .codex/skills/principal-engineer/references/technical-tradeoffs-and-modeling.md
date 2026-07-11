@@ -166,7 +166,7 @@ Use Expand-Migrate-Contract:
 4. **Backfill**: process resumable idempotent batches; apply only when the source version is newer (CAS/conditional write), propagate deletes/tombstones, and quarantine conflicts instead of overwriting.
 5. **Dual support**: keep one authoritative writer. If temporary dual write is unavoidable, use one operation/version identity and explicit partial-failure reconciliation rather than two independent truths.
 6. **Validate**: reconcile value/version/tombstone equality and gaps, not only counts/checksums; run shadow/differential reads and contract/mixed-version tests.
-7. **Cut over**: use explicit read/write states, staged exposure, stop/rollback thresholds, and observable lag/conflict/error signals.
+7. **Cut over**: use explicit read/write states, staged exposure, stop/rollback thresholds, and observable lag/conflict/error signals. Pin version selection per request/cohort/data-version boundary so one unit of work runs a single implementation end-to-end, and keep rollout routing sticky per entity to prevent interleaved writes.
 8. **Fence and contract**: fence old writers/readers before destructive removal. Default retirement requires zero active old usage; any approved nonzero forced sunset must name affected consumers, stable rejection/migration behavior, and accepted loss. Require explicit authorization and a verified target for the irreversible operation.
 
 For unknown enum or schema values, choose and test preserve/forward, explicit unknown, reject, or quarantine behavior. Never silently coerce a new meaning into an existing value.
@@ -259,6 +259,10 @@ Keep calibration, verification, and validation distinct:
 Prefer evidence in this order: same-version production telemetry, production-like load test, executable prototype, comparable existing system, specification/capacity derivation, bounded expert estimate.
 
 Separate calibration and validation data. Compare signed/absolute/relative error, percentile error, bottleneck location, candidate ordering, and threshold classification. For simulation-based models, iterate calibration on resources with prediction error above ~20%; accept the model into ongoing monitoring only when validation shows mean absolute utilization error under 2 percentage points and the top decile under 5. A model can rank options while missing absolute values; say exactly what it is fit to decide.
+
+For simulation-based models, when runtime inputs fall outside the calibrated distribution, model-driven automation must not fire — report unknown and fall back to a conservative heuristic or human escalation instead of extrapolating.
+
+Do not calibrate resource demand from response times in any load region with queueing — response time includes queue wait; derive demand from utilization/throughput or isolated service-time measurement.
 
 Run sensitivity analysis across evidence-based parameter ranges. Spend new measurement effort on high-sensitivity, low-confidence inputs. If small plausible changes reverse the winner, do not present a single confident choice; either improve evidence or choose the robust/reversible candidate.
 

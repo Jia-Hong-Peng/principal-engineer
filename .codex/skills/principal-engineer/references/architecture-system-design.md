@@ -174,6 +174,7 @@ Do not choose service count from line count. Use component metrics, churn, fan-i
 - Asynchronous messaging fits buffering, decoupling, event reaction, long jobs, and resilience.
 - Async requires ack, retry, DLQ, idempotency, ordering policy, schema versioning, and replay strategy.
 - Avoid cross-service transactions as default; use coarser boundaries, events, compensation, or keep the operation local.
+- Choose contract strictness (strict, loose, or consumer-driven) from consumer update speed, deployment control, breaking-change cost, and security-visible fields; a loose contract still needs explicit minimum semantics plus contract tests.
 
 Classify every cross-boundary workflow on three independent axes:
 - **Communication**: synchronous or asynchronous.
@@ -218,7 +219,7 @@ Every eventual-consistency path needs a consistency contract:
 - Schema, event, enum, status, and payload changes must account for old readers, old writers, old stored data, in-flight messages, rolling upgrades, and cross-service formats.
 - Match partitioning to workload locality and consistency keys; check hot keys, skew, routing metadata, rebalancing, secondary indexes, and cross-partition operations.
 - Use transactions and isolation to protect named invariants; map lost updates, write skew, phantoms, stale reads, and conflict handling to business rules.
-- Build a write-owner matrix before a service/data split:
+- Build a write-owner matrix before a service/data split, and inventory cross-schema foreign keys, views, triggers, and stored procedures spanning candidate boundaries as blocking integrators:
 
 | Data set | Canonical writer | Other writers/readers | Invariant/transaction | Schema owner | Copies/consumers | Freshness/repair |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -268,6 +269,7 @@ Record significant decisions in an ADR with status quo, alternatives, protected 
 - Let policy isolation and dependency direction arbitrate framework, database, transport, vendor, and delivery boundaries.
 - Let source of truth, consistency, durability, replication, partitioning, schema evolution, event flow, replay, and repair arbitrate data architecture.
 - Let production failure, overload, isolation, observability, rollback, and dependency survival arbitrate runtime topology.
+- A decision is architecture-level when impact scope x change cost x failure consequence x expected lifetime scores high — that is what warrants an ADR and verification (decision significance, distinct from the risk heatmap's risk ranking); low scores stay local design.
 - Do not load heavyweight architecture pressure for simple local CRUD or low-risk cleanup; use the smallest mechanism that changes the decision.
 
 ## Architecture Modeling

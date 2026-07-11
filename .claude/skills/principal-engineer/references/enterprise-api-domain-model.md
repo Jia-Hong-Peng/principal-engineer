@@ -175,8 +175,8 @@ Minimum API telemetry: rate, status/error class, p50/p95/p99, saturation/pools/q
 
 ## API Security
 - Apply the auth and trust-boundary rows in `pre-landing-review-prevention.md` Required Gates before landing.
-- API-specific identity: API keys identify applications, not users; access tokens must be short-lived, scoped, revocable, and audience-checked; validate JWT signature, issuer, audience, expiration, not-before, and required claims.
-- Name API-specific vulnerability classes explicitly — BOLA, BFLA, mass assignment, excessive data exposure — and enforce with object- and function-level authorization plus allowlist validation for input, output, and writable fields.
+- API-specific identity: API keys identify applications, not users; access tokens must be short-lived, scoped, revocable, and audience-checked; validate JWT signature, issuer, audience, expiration, not-before, and required claims. Refresh tokens must be protected and revocable, with an explicit policy for rotation and for detecting reuse of an already-rotated token.
+- Name API-specific vulnerability classes explicitly — BOLA, BFLA, mass assignment, excessive data exposure — and enforce with object- and function-level authorization plus allowlist validation for input, output, and writable fields. The allow decision is a conjunction that includes current resource state — lifecycle-state authorization is not optional.
 - Gateway enforces ingress policy but never replaces service-level authorization; webhooks need signature verification and replay protection when supported; user-controlled URLs, redirects, and fetches need SSRF protection via allowlist/blocklist for internal ranges; audit security-sensitive actions with actor, target, result, reason, and trace ID.
 
 ## Gateway And Mesh

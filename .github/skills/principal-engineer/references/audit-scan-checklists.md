@@ -8,7 +8,7 @@ Subordinate contract:
 - The New repository branch of P2 checks its setup against the Day-One Baseline section (advisory candidates, not a completion gate).
 - Every hit is a candidate only; it becomes a finding through promotion per SKILL scope rules (trigger, mechanism, impact, owner, evidence), executed at P1 step 3.
 - Polarity convention: every predicate is phrased so that YES means healthy; any predicate that cannot be checked off is a candidate.
-- During audits every check action takes its read-only form. Any action that executes repository or documented commands, mutates sources (mutation testing, breaking the SUT), enables logging or config on shared systems, runs load/soak/restore drills, or checks out historical revisions requires explicit authorization and an isolated environment; record such checks as proposed follow-ups instead of executing them.
+- During audits every check action takes its read-only form. Any action that executes repository or documented commands, mutates sources (mutation testing, breaking the SUT), enables logging or config on shared systems, runs load/soak/restore drills or fault-injection/chaos experiments, or checks out historical revisions requires explicit authorization and an isolated environment; record such checks as proposed follow-ups instead of executing them.
 - Some predicates overlap the touched-surface gate matrix in `pre-landing-review-prevention.md`. That matrix governs landing a specific diff; these sections govern repository-wide scans. When both apply to a touched surface, the matrix wins.
 
 ## Day-One Baseline (new repository)
@@ -69,6 +69,7 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Are timezones expressed as IANA IDs, never fixed offsets or abbreviations? — grep for "+08:00"-style offsets and zone abbreviations used as zones
 - [ ] Are future-dated events stored as local time plus zone ID (UTC as derived), not bare UTC? — read the schema for scheduled items
 - [ ] Are distinct time concepts (instant, date, duration, period) given distinct types instead of one DateTime? — sample time-valued fields
+- [ ] Is domain code free of implicit system-default locale/zone dependence (default-locale formatting, parsing, or case conversion)? — grep default-locale/zone APIs outside the composition root
 - [ ] Are primary keys meaningless, immutable surrogates (no SSN/date/business data as PK)? — read table definitions
 - [ ] In multi-tenant code, does every repository query carry the tenant ID? — grep finder implementations for tenant parameters
 - [ ] Are externally referenced records soft-deleted/disabled rather than physically removed? — read delete flows for hard DELETE on shared entities
@@ -151,20 +152,23 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Are tokens short-lived (typically 1-60 minutes), JWTs signature-verified before claims are read, and API keys cryptographically random (typically 32 characters / 256 bits)? — read auth middleware and key generation
 - [ ] Is the OAuth grant matched to client type (auth code for confidential, PKCE for public, client credentials for machine), with no Implicit/ROPC remnants? — read auth configuration
 - [ ] Are internal service-to-service calls authenticated (mTLS/service identity) with default-deny network policy? — read mesh/network policy config
+- [ ] Are admin/management endpoints network-separated from the service plane, with egress restricted so leaked credentials cannot freely exfiltrate? — read IaC/NetworkPolicy/firewall rule files and deployment manifests
 - [ ] Is the codebase free of dangerous constructs (unbounded input reads, eval on external strings, deserialization that can execute code)? — grep the known-dangerous API list for the language
 - [ ] Are regexes applied to untrusted input screened for catastrophic backtracking, with timeouts? — scan regex literals on input paths
 - [ ] Are dependencies pinned via a committed lockfile, with CVE scanning as a blocking CI gate and licenses reviewed on intake? — read manifest/lockfile and pipeline config
 - [ ] Do services and DB accounts run least-privilege, with no shared all-powerful account across workloads? — read infra/IAM definitions
 - [ ] Are HTTPS and HSTS enforced, and TLS at minimum version 1.2 at every termination point? — read server/gateway config
 - [ ] Are control headers (role/permission assertions) stripped from external requests at the edge? — read gateway header rules
+- [ ] Is CORS treated as a browser-read restriction only (never as API security), with an exact-origin allowlist, no wildcard-with-credentials, and authentication still enforced on every endpoint? — read gateway/server CORS config
 - [ ] Is sensitive data encrypted in transit and at rest, and redacted in logs? — grep log serializers for redaction; read storage config
 - [ ] Are rate limiting and load shedding deployed at the edge and between internal services? — read gateway and service config
+- [ ] Does every security control (identity provider, rate limiter, policy store) fail closed by default on dependency failure, with any deliberate fail-open limiting exposure and leaving audit evidence? — read auth/rate-limit/policy client error branches
 
 ## Performance & Runtime
 
 - [ ] Do user-facing services have explicit tail-latency targets (99th percentile) bound to an offered-load ceiling, with dashboards showing median+p99 rather than mean±stddev? — read SLO docs and dashboard definitions
 - [ ] Are hot flows free of N+1 query patterns (per-item SELECT inside loops)? — grep loops containing fetch calls; (authorization-gated) enable query logging on a hot flow
-- [ ] Is every read bounded (LIMIT on queries, pagination on lists, no whole-collection loads)? — grep query construction and handler code
+- [ ] Is every read bounded (LIMIT on queries, pagination on lists, no whole-collection loads), and do distributed join/shuffle/broadcast operations carry size/skew guards? — grep query construction and handler code
 - [ ] Does every optimization carry before/after measurements under the same conditions, with hot paths identified by a profiler rather than intuition? — grep commit history for optimization claims lacking numbers; look for profiling artifacts behind tuned code
 - [ ] Are caches separate components with hit/miss/eviction statistics and tested invalidation, not embedded in domain objects? — read cache usage sites
 - [ ] Are async/event-loop paths free of blocking synchronous calls? — grep async handlers for sync I/O APIs
@@ -187,6 +191,7 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Do services run startup sanity checks (expected instance counts, data files present and plausible) that page on failure? — read startup code
 - [ ] Are queue depth and consumer lag on dashboards with declared expected bounds? — read monitoring config
 - [ ] Is the last successful backup-restore drill recorded with a date? — read runbooks and drill records
+- [ ] Do resilience claims (timeout, retry, circuit breaker, failover) have failure-injection or drill evidence covering dependency, network, instance, and data failures? — read drill records and fault-injection test configs
 - [ ] Do certificates, credentials, and domains have renewal/expiry alerting configured? — read renewal and alerting config
 - [ ] Is there a feature-flag inventory with ages, with decided flags removed rather than reused? — grep the flag registry against flag references in code
 - [ ] Is deployment a single automated pipeline from pushes to the main branch, with gradual rollout, a rehearsed rollback, and deployment decoupled from release? — read the pipeline and rollout config
@@ -202,6 +207,7 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Is the build reproducible (pinned toolchain and dependencies; years-old releases rebuildable)? — read toolchain/dependency pinning and build docs; (authorization-gated) attempt a historical rebuild
 - [ ] Is there a warning ratchet (count may never increase), with every suppression carrying a written justification? — read analyzer config and grep suppress attributes
 - [ ] Are refactoring priorities driven by churn × complexity hotspot data rather than opinion? — compute churn from git log joined with complexity metrics
+- [ ] Are low-churn, high-fan-in modules genuinely stable rather than fear-frozen? — check for workarounds routed around them, missing tests, and TODO clusters referencing them
 - [ ] Do "will be rewritten/retired soon" freeze zones have explicit, periodically reconfirmed dates? — grep deprecation notes for dates; stale ones are the miss
 - [ ] Are long-tail migrations tracked to completion, with the old API actually deleted on schedule? — check migration lists against remaining old-API call sites
 - [ ] Are large call-site rewrites done by script plus assertion-verified inference, gated on a covered test suite? — read the mechanical-change tooling and its verification step

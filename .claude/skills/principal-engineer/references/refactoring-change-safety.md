@@ -94,7 +94,7 @@ Before a mechanical-looking refactor check:
 - Short-circuiting and lazy/deferred execution.
 - Exception type, stack, timing, and cleanup.
 - Null/missing/unknown/default distinctions.
-- Numeric overflow, precision, unit, equality, hashing, and ordering.
+- Numeric overflow, precision, unit, equality, hashing, and ordering (including culture/locale-sensitive comparison, formatting, parsing, and ordering — changing culture semantics is a behavior change, not cleanup).
 - Resource acquisition, disposal, transaction, lock, lease, and cancellation scope.
 - Async scheduling, context propagation, reentrancy, backpressure, and unobserved work.
 - Serialization shape, field names/numbers, generated code, ABI/FFI, and binary compatibility.

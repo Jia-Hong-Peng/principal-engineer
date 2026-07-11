@@ -112,6 +112,8 @@ For each boundary record:
 
 Translate external identity, status, units, time, missing values, errors, and versions at the boundary. Preserve an explicit unknown or lossy-conversion result; never hide a failed translation behind a convenient default.
 
+For authenticated payloads, verify integrity/MAC over the raw received bytes before normalization, and authorize against the canonical resource actually operated on.
+
 ## Correctness Construction
 Use the cheapest enforceable mechanism that prevents the failure:
 
@@ -136,8 +138,11 @@ For parsers and native or unsafe code:
 - Check overflow in `count * element_size`, offset-plus-length, unit conversion, and signed/unsigned conversion.
 - Keep the memory-safe core large and the unsafe island small, isolated, documented, fuzzed, and sanitizer-checked where supported.
 - Define text comparison, normalization, case, grapheme/byte semantics, replacement policy, and encoding at every boundary.
+- Test stream/protocol parsers against declared-length-greater-than-received, concatenated frames in one read, partial reads splitting a frame, and trailing leftover bytes.
 
 For every acquired resource, enumerate normal completion, exception, cancellation, timeout, and process-recovery paths. Preserve the primary error if cleanup also fails. Do not let getters, logging, formatting, or cleanup hide I/O, blocking, mutation, or a second failure.
+
+A CLI/pipeline tool keeps stdout data-only with diagnostics on stderr and maps success, legal rejection, input error, and internal fault to stable distinct exit codes; for an existing tool these are public contracts and changing them is a behavior change. Test empty input, missing trailing newline, invalid encoding, broken pipe, partial I/O, and termination-signal cancellation; binary payloads never pass through text decoding or shell interpolation.
 
 ## Build, Generation, And Release Evidence
 Treat the toolchain as part of the product contract:
