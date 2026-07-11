@@ -123,7 +123,7 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Does every unmet precondition produce a signal (return value or exception) rather than a silent no-op? — sample conditional early returns without notification
 - [ ] Does every async task submission have a failure observation path (awaited result or uncaught-exception handler)? — grep executor/promise submission sites
 - [ ] Do long-lived counters and size arithmetic have overflow protection, and narrowing conversions checks? — grep accumulators and casts on hot paths
-- [ ] Do error messages state the violated rule and the next action, without leaking sensitive data? — sample user-facing messages and logged payloads
+- [ ] Do error messages state the violated rule, the next action, and — when non-sensitive — the concrete triggering value (e.g. the out-of-range number or rejected field name), without leaking sensitive data or internal implementation detail? — sample user-facing messages and logged payloads
 - [ ] After a failed step, is its output prevented from being consumed downstream? — trace a representative failure through the pipeline
 - [ ] Do error paths complete cleanup so the operation is safely re-invokable? — read error branches of stateful operations
 
