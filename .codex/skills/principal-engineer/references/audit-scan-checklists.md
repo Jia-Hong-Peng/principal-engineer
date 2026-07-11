@@ -159,8 +159,10 @@ A new repository should also trivially pass every other section; sweep them once
 - [ ] Are OS/shell commands built from argument arrays rather than by interpolating user-controlled data into a shell-parsed string? — grep shell-exec/subprocess sites for interpolation into the command string
 - [ ] Are regexes applied to untrusted input screened for catastrophic backtracking, with timeouts? — scan regex literals on input paths
 - [ ] Are dependencies pinned via a committed lockfile, with CVE scanning as a blocking CI gate and licenses reviewed on intake? — read manifest/lockfile and pipeline config
+- [ ] Do CI workflows avoid running untrusted fork code with repository secrets — no pull_request_target/workflow_run that checks out the PR head ref, and no attacker-controllable github.event field (PR title, body, or branch name) interpolated into a run: shell step? — read .github/workflows for a PR-head checkout under those triggers and for github.event interpolation in run: blocks
 - [ ] Do services and DB accounts run least-privilege, with no shared all-powerful account across workloads? — read infra/IAM definitions
 - [ ] Are HTTPS and HSTS enforced, and TLS at minimum version 1.2 at every termination point? — read server/gateway config
+- [ ] Is outbound TLS certificate verification never disabled in non-test code (InsecureSkipVerify, NODE_TLS_REJECT_UNAUTHORIZED=0, rejectUnauthorized: false, verify=False)? — grep client/HTTP-call sites for these disable flags, skipping test files
 - [ ] Are control headers (role/permission assertions) stripped from external requests at the edge? — read gateway header rules
 - [ ] Is CORS treated as a browser-read restriction only (never as API security), with an exact-origin allowlist, no wildcard-with-credentials, and authentication still enforced on every endpoint? — read gateway/server CORS config
 - [ ] Is sensitive data encrypted in transit and at rest, and redacted in logs? — grep log serializers for redaction; read storage config
