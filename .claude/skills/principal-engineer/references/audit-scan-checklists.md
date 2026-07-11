@@ -14,6 +14,7 @@ Subordinate contract:
 ## Day-One Baseline (new repository)
 
 - [ ] Does one documented command from a fresh checkout build and test everything, without IDE buttons? — read README/scripts and the CI definition for a single entry command exercised in CI
+- [ ] Do committed setup docs (README/CONTRIBUTING) state prerequisites and target platform, cover run and test steps for a fresh clone, and pin the toolchain via a version file (.nvmrc/.tool-versions/mise) or a devcontainer/bootstrap script, with the documented commands matching those in package.json/Makefile/CI? — read the setup docs and toolchain/bootstrap files and compare the documented commands against the actual scripts, without running them
 - [ ] Are warnings-as-errors and the strictest analyzer/null-safety level enabled with zero current warnings? — read compiler/linter config and the latest CI build log
 - [ ] Is a linter/formatter config committed and enforced in CI, so style never enters review? — check for config files and the CI step that fails on violation
 - [ ] Do CI gates (tests, lint, secret scan, dependency audit) actually block merge? — read pipeline config and branch protection
