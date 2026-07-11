@@ -1,8 +1,12 @@
 # Principal Engineer
 
+> Make an AI coding agent execute with principal-level technical judgment — action-first, evidence-bound, and maintained like production software.
+
 Traditional Chinese: [readme.zh.md](readme.zh.md)
 
-This repository defines AI skill packages for making an agent work like a principal software engineer.
+Most "senior engineer" prompts make an agent *sound* senior. This one is built to make it *behave* senior: read the system before deciding, change the repository instead of lecturing, and prove the change with real commands, a final diff, and an explicit stop condition — or say precisely why it can't. A polished report is not accepted as a substitute for working software.
+
+It ships for three hosts (Claude Code, Codex, GitHub Copilot) from one aligned source, carries a domain-grouped scan layer you can point at any repository, and is maintained with the same rigor it asks of the agent — adversarial review before large changes, blind A/B evals with recorded results, fail-then-pass behavioral verification, and CI-enforced package alignment.
 
 This is not a corporate role-play skill. It does not try to simulate the full human job title, the organizational authority, or the management responsibilities of a principal engineer. The goal is narrower and more useful: define how an AI coding agent should think, decide, and execute when the work requires principal-engineer-level technical judgment.
 
@@ -54,6 +58,16 @@ architecture, enterprise/API/domain, implementation, runtime, tradeoff, DevSecOp
 files are specialist toolboxes loaded only at a named playbook step. Knowledge references
 do not own workflow or completion.
 
+One reference is a checkable scan layer rather than a specialist toolbox:
+`audit-scan-checklists.md` holds read-only, repository-checkable predicates grouped by domain
+(architecture and coupling, API and contracts, domain and data, distributed consistency, code
+construction, error handling, tests, security, performance, operations, and change safety),
+plus a Day-One Baseline for a new repository. A project audit draws individual predicates as
+probes; a new-project build checks its setup against the Day-One Baseline; an explicitly
+requested full scan sweeps the relevant sections. Every hit stays a candidate until it is
+promoted to a finding through the same trigger/mechanism/impact/owner/evidence discipline — the
+layer supplies checkable conditions, never a raw checklist dump.
+
 This prevents a polished report from masquerading as engineering work: a code-change task
 is incomplete without the patch or requested artifact, command results, final diff
 inspection, triggered landing gates, and an explicit stop condition.
@@ -74,6 +88,7 @@ This skill pushes an AI agent toward:
 - Performance diagnosis that accounts for completed work and elapsed time instead of guessing from averages
 - Reproducible build, generated-artifact, release, restore, and recovery evidence
 - Review discipline focused on bugs, regressions, risk, and maintainability
+- Repository-wide auditing against read-only, checkable predicates that a new project can adopt directly and an existing project can scan checkbox by checkbox to surface gaps
 - Verification that fits the blast radius of the change
 - Clear technical communication without performative seniority
 
@@ -150,7 +165,7 @@ The output should feel like a strong technical engineer is working inside the re
 
 ## Maintaining This Skill
 
-Maintenance follows a documented, evidence-backed methodology — mirror-sync discipline, adversarial review before large changes, behavioral fail-then-pass verification, blind A/B evals, and content-fidelity rules. See [MAINTENANCE.md](MAINTENANCE.md) before changing skill content.
+Changes are treated as engineering, not editing. Every non-trivial change goes through mirror-sync discipline, adversarial review before it lands, behavioral fail-then-pass verification, and content-fidelity rules; capability claims are checked with blind A/B evals whose transcripts and scores are recorded, not asserted. The methodology and its evidence live in [MAINTENANCE.md](MAINTENANCE.md) and [`evals/`](evals/) — read them before changing skill content.
 
 ## Intended Use
 
