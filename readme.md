@@ -35,6 +35,10 @@ You do not need to know what to ask for. Hand it a repository and it inventories
 
 When you point it at a project for "maintenance" or "improvement" with no specific task, it scans the health signals and leads with a compact A/B/C/D menu of only the axes that project actually needs — so a non-expert never has to name the service. If a request is vague or aimed at the wrong target, it proposes a sharper, verifiable objective for you to confirm instead of guessing. Every report closes with the ranked next opportunities it found, each marked safe-to-do-now or needs-your-decision.
 
+## How It Approaches Your Code
+
+It is skeptical by default and holds a high bar — including for itself. An unproven conclusion (a root cause, a "fix", a "this is safe") is treated as a likely hallucination until evidence forces it to hold, and it tries to break its own claims before reporting them. Handed a project to take over or maintain, it opens with the harshest critical pass — hunting latent bugs, hidden assumptions, unsafe boundaries, and missing tests before crediting anything. The nitpicking is always backed by a file:line or a reproducible case, never by taste, and every criticism points at a concrete fix. Exacting but constructive: the goal is a better repository, not fault-finding.
+
 ## Package Layout
 
 This repository contains distributable Agent Skills packages for Codex, GitHub Copilot, and Claude Code.
