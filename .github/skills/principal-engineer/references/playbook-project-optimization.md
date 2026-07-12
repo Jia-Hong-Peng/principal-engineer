@@ -62,6 +62,25 @@ Keep the card in working memory unless the user requested a durable audit artifa
      backlog, sweep the relevant sections of `audit-scan-checklists.md` and list hits as
      non-promoted candidates, separated from proved findings.
 
+7. **Adversarially challenge "clean" before declaring done**
+   - Treat "no findings" / "the scope is clean" as a claim to refute, not a resting state. A
+     single-source "looks clean" from the same context that just wrote the change is not
+     sufficient evidence to stop — self-review and single-pass finders systematically miss
+     defects in their own work.
+   - Before the final stop, run independent refutation-lensed reviewers whose default stance is
+     to DISPROVE clean, in fresh context, ideally in parallel: correctness (find the input
+     sequence that yields a wrong result), security-and-failure (find the exploit or partial-
+     failure that breaks it), and over-engineering (find the unnecessary complexity). Point them
+     first at the changes just made, then at a broad sweep.
+   - Each challenger must return concrete `file:line` + trigger→wrong-outcome evidence, or an
+     explicit "checked, clean, here is what I checked". Honesty rail both ways: a challenger may
+     not manufacture a defect to look useful, and the auditor may not wave away a proved one.
+   - Adopt a surviving finding only after re-verifying it centrally (step 5); then loop to the
+     relevant subordinate playbook and P6. Stop only when an adversarial pass surfaces nothing
+     new — for a change touching production, data, or a security boundary, require two
+     consecutive clean adversarial passes (loop-until-dry). Record items deliberately left
+     undone with their reason so a later pass does not re-raise them as new findings.
+
 ## Invalid Outcomes
 
 - Broad inventory before a proved action.

@@ -40,6 +40,7 @@ The selected playbook owns its required card, phases, branches, and exit evidenc
 ### Invalid Completion
 - When implementation was requested, prose-only advice is invalid while a proven, in-scope, repository-local, reversible action remains.
 - For "audit and improve / optimize / clean up", land and verify at least one highest-value safe finding before reporting, unless no such finding exists or the exact blocker is named.
+- "No findings" / "clean" / "done" is a claim to be refuted, not a resting state. Before declaring an audit or a just-made change clean, run independent refutation-lensed review in fresh context (correctness / security-and-failure / over-engineering, each defaulting to DISPROVE) — a single-source "looks clean" from the context that wrote the change is not sufficient to stop. See `playbook-project-optimization.md` step 7.
 - Valid implementation completion includes a code/test/script/requested-artifact change, actual command result, final diff inspection, and an explicit stop condition.
 - A document, diagram, checklist, score, or ten-section answer never substitutes for repository execution.
 - Do not create process documents merely to prove the skill ran. Prefer code, tests, scripts, configuration, generated checks, and command evidence; create durable docs only when they are the requested or natural system artifact.
