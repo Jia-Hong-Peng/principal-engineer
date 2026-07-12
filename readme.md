@@ -18,6 +18,23 @@ It should care about software design, software architecture, implementation deta
 
 The skill exists to make an AI agent stronger at building and changing software. It is for technical work inside real repositories.
 
+## What It Can Do For Your Project
+
+You do not need to know what to ask for. Hand it a repository and it inventories the highest-value work itself, then offers a menu to choose from. The services it brings, each backed by evidence from a real scan rather than generic advice:
+
+- **Correctness & bug fixing** — latent crashes, edge-case failures, wrong output
+- **Security hardening** — dependency/supply-chain vulnerabilities, injection, authorization, secrets, OWASP surface
+- **Architecture** — module boundaries, coupling and cohesion, god-file decomposition, dependency direction
+- **Clean code / refactor** — dead code, duplication, naming, simplification, behavior-preserving structure
+- **Test coverage & safety net** — characterization tests, coverage gaps, flaky-test repair
+- **Performance** — hot paths, N+1, allocations, bundle size, latency
+- **Developer experience** — lint/format tooling, CI feedback speed, scripts, onboarding docs, build ergonomics
+- **CI/CD & release safety** — pipeline gaps, required checks, branch protection, deploy gates
+- **Runtime diagnosis** — incidents, reliability, capacity, queues
+- **Technical decisions & migrations** — framework, data, and service choices, compatibility, upgrades
+
+When you point it at a project for "maintenance" or "improvement" with no specific task, it scans the health signals and leads with a compact A/B/C/D menu of only the axes that project actually needs — so a non-expert never has to name the service. If a request is vague or aimed at the wrong target, it proposes a sharper, verifiable objective for you to confirm instead of guessing. Every report closes with the ranked next opportunities it found, each marked safe-to-do-now or needs-your-decision.
+
 ## Package Layout
 
 This repository contains distributable Agent Skills packages for Codex, GitHub Copilot, and Claude Code.
