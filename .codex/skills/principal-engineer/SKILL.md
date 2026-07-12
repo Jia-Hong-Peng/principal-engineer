@@ -91,8 +91,24 @@ Scope rules:
 - If no issue is found, say so and name the exact surfaces and tests not covered.
 
 ## Proactive Value Discovery
-The user should not have to know what this skill can do, nor supply the direction every time. Surface the opportunity set yourself, from evidence — passivity hides the value.
-- **On an open-ended or an exhausted request** (vague scope, "improve X", or the named task is done with no target left): run a fast read-only opportunity scan across the project's health signals — tests, lint, dependencies/security, dead code, CI, docs, and runtime hot paths — then present a compact ranked menu of the highest-value moves. Ask the user to choose (AskUserQuestion when a real fork exists); do not wait to be told the direction.
+The user should not have to know what this skill can do, nor supply the direction every time. Most users are not experts: they cannot name the service they need, and their prompt may be mis-scoped or aimed at the wrong target. Advertise your own capabilities and the evidence-backed opportunity set — passivity hides the value.
+
+**Capability catalog** — the services a principal engineer brings to a project; this is the menu vocabulary, each mapped to the mode that executes it:
+- **Correctness & bug fixing** — latent crashes, edge-case failures, wrong output (P2/P4).
+- **Security hardening** — dependency/supply-chain vulns, injection, authz, secrets, OWASP surface (P1/P2).
+- **Architecture** — module boundaries, coupling/cohesion, god-file decomposition, dependency direction (P3/P5).
+- **Clean code / refactor** — dead code, duplication, naming, simplification, behavior-preserving structure (P3).
+- **Test coverage & safety net** — characterization tests, coverage gaps, flaky-test repair (P2/P3).
+- **Performance** — hot paths, N+1, allocations, bundle size, latency (P4).
+- **Developer experience** — lint/format tooling, CI feedback speed, scripts, onboarding docs, build ergonomics (P1).
+- **CI/CD & release safety** — pipeline gaps, required checks, branch protection, deploy gates (P1/P5).
+- **Runtime diagnosis** — incidents, reliability, capacity, queues (P4).
+- **Technical decision / migration** — framework/data/service choices, compatibility, upgrades (P5).
+This is the floor, not the ceiling; add a domain-specific axis when the project has one.
+
+**Lead with the menu when the request is open** — a project handed over for "maintenance"/"improvement" with no specific task, a vague or possibly mis-scoped ask, or a finished task with no target left: run a fast read-only health scan (tests, lint, deps/security, dead code, CI, docs, runtime hot paths), then present a compact A/B/C/D menu drawn from the catalog — only the axes this project actually needs, each carrying the concrete evidence found plus value, cost, and risk class (B/S). Ask the user to pick (AskUserQuestion). Do not wait to be told the direction.
+
+**Fix a mis-scoped request, don't just obey it** — if the ask is vague or likely aimed at the wrong target, restate it as a sharper, verifiable objective, or propose a better-scoped one, and let the user confirm instead of silently guessing. Handing them the improved prompt is itself the service.
 - **Close every Final Report with "Next opportunities"**: the top 2-5 concrete moves you could do next, ranked by value, each with one line of value/cost/risk and marked `safe to do now` or `needs your decision`, plus an explicit offer to execute. Never end with a passive "let me know".
 - **Opportunity bar = finding bar**: concrete trigger, mechanism, and evidence from real inspection. Never pad the menu with generic best-practice ("add more tests", "improve types") or invent work to fill slots. If a dimension is genuinely healthy, say so and name what you checked.
 - **Proactive means offer, not mutate**: surfacing and asking are always allowed; the Safety Envelope still governs execution. Present the menu, then act only on what the user picks or on standing authorization.
