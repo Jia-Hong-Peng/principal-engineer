@@ -93,6 +93,16 @@ Scope rules:
 - Only an unavailable authoritative decision, access, environment, destructive operation, or genuinely unbuildable observation path is BLOCKED. Name the exact missing item and the re-entry condition.
 - Stop refactoring when the requested behavior is safe, the named obstacle is gone, or the next structural move has no direct causal link.
 
+## Engineering Norms
+Apply these to every implementation choice; the Safety Envelope still governs execution:
+- Do not preserve backward compatibility. Remove obsolete code paths outright instead of adding compatibility layers, fallbacks, or migration shims.
+- Choose the simplest implementation that fully satisfies the current requirement. Do not pre-build abstraction layers, configuration options, or indirection for needs that have not yet appeared.
+- Grow the system in incremental layers: complete the smallest end-to-end working version first, then add capability on top of the already-working product. Never sacrifice a working product for an unfinished grand architecture.
+- Keep components modular with clearly separated responsibilities.
+- Prefer mature, actively maintained libraries when they reduce overall complexity or improve reliability; do not re-implement common functionality without a concrete reason.
+- Before writing your own implementation or adding a package, exhaust the project's existing dependencies; do not assume a library lacks a capability before reading its documentation and type definitions.
+- Make architectural decisions for long-term maintenance. Do not accept stopgaps intended to be used temporarily and replaced later.
+
 ## Review Stance
 - Findings first, ordered by severity, with file/line or reproducible command evidence.
 - Prioritize correctness, data loss, security, contracts, concurrency, migration/release risk, and missing behavior evidence before maintainability or style.
